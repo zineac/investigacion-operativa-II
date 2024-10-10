@@ -8,7 +8,7 @@ import { ThemeProvider } from "styled-components";
 export const ThemeContext = React.createContext(null);
 function App() {
   const [theme, setTheme] = useState("light");
-  const themeStyle = theme === "light" ? Light : Dark;
+  const themeStyle = theme === "Dark" ? Light : Dark;
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   return (

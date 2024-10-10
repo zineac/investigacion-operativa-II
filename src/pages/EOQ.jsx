@@ -1,8 +1,8 @@
 import styled from "styled-components";
-export function Simplex() {
+export function EOQ() {
   return (
     <Container>
-      <h1>Simplex</h1>
+       <h1>EOQ</h1>
     </Container>
   );
 }

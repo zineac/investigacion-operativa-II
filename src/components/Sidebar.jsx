@@ -30,7 +30,7 @@ export function Sidebar({ sidebarOpen, setSidebarOpen }) {
         <div className="imgcontent">
           <img src={logo} />
         </div>
-        <h2>codigo369</h2>
+        <h2>Grupo</h2>
       </div>
       {linksArray.map(({ icon, label, to }) => (
         <div className="LinkContainer" key={label}>
@@ -70,29 +70,29 @@ export function Sidebar({ sidebarOpen, setSidebarOpen }) {
 //#region Data links
 const linksArray = [
   {
-    label: "Simplex",
+    label: "Home",
     icon: <AiOutlineHome />,
-    to: "/",
+    to: "/home",
   },
   {
     label: "PERT",
     icon: <MdOutlineAnalytics />,
-    to: "/estadisticas",
+    to: "/PERT",
   },
   {
     label: "CPM",
     icon: <AiOutlineApartment />,
-    to: "/productos",
+    to: "/CPM",
   },
   {
-    label: "Diagramas",
+    label: "EOQ",
     icon: <MdOutlineAnalytics />,
-    to: "/diagramas",
+    to: "/EOQ",
   },
   {
-    label: "Reportes",
+    label: "Decisiones",
     icon: <MdOutlineAnalytics />,
-    to: "/reportes",
+    to: "/Decisiones",
   },
 ];
 //#endregion
