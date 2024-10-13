@@ -5,6 +5,10 @@ import { Lotes } from "../EOQ-Variaciones/Lotes";
 import { Faltantes } from "../EOQ-Variaciones/Faltantes";
 import { Descuentos } from "../EOQ-Variaciones/Descuentos";
 import { PeriodoUnico } from "../EOQ-Variaciones/PeriodoUnico";
+import { PuntoReorden } from "../EOQ-Variaciones/PuntoReorden";
+import { RevisionPeriodica } from "../EOQ-Variaciones/RevisionPeriodica";
+import { SinPerdida } from "../EOQ-Variaciones/SinPerdida";
+import { ConPerdida } from "../EOQ-Variaciones/ConPerdida";
 
 const modelos = [
   { id: 1, nombre: "Principal" },
@@ -44,6 +48,10 @@ export function EOQ() {
         {modeloSeleccionado === 3 && <Faltantes />}
         {modeloSeleccionado === 4 && <Descuentos />}
         {modeloSeleccionado === 5 && <PeriodoUnico />}
+        {modeloSeleccionado === 6 && <PuntoReorden />}
+        {modeloSeleccionado === 7 && <RevisionPeriodica />}
+        {modeloSeleccionado === 8 && <SinPerdida />}
+        {modeloSeleccionado === 9 && <ConPerdida />}
       </ContenidoWrapper>
     </ContenedorPrincipal>
   );
@@ -59,7 +67,7 @@ const ContenedorPrincipal = styled.div`
 const BarraWrapper = styled.div`
   margin: 0 20px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   background-color: #fff;
   padding: 10px 20px;
   margin-bottom: 20px;
