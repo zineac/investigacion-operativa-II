@@ -4,11 +4,11 @@ import Cargando from "../components/Cargando";
 import Tarjeta from "../components/Tarjeta";
 
 export function Principal() {
-  const [demanda, setDemanda] = useState(0);
-  const [costoOrdenar, setCostoOrdenar] = useState(0);
-  const [costoMantener, setCostoMantener] = useState(0);
-  const [diasLaborables, setDiasLaborables] = useState(0);
-  const [tiempoEntrega, setTiempoEntrega] = useState(0);
+  const [demanda, setDemanda] = useState(104000);
+  const [costoOrdenar, setCostoOrdenar] = useState(32);
+  const [costoMantener, setCostoMantener] = useState(2);
+  const [diasLaborables, setDiasLaborables] = useState(250);
+  const [tiempoEntrega, setTiempoEntrega] = useState(2);
   const [eoq, setEoq] = useState(null);
   const [costoTotal, setCostoTotal] = useState(null);
   const [puntoReorden, setPuntoReorden] = useState(null);
@@ -36,7 +36,7 @@ export function Principal() {
         <form onSubmit={calcularEOQ}>
           <h2>Parámetros de Entrada</h2>
           <Etiqueta>
-            Demanda Anual
+            Demanda Anual (D)
             <Input
               type="number"
               value={demanda}
@@ -45,7 +45,7 @@ export function Principal() {
             />
           </Etiqueta>
           <Etiqueta>
-            Costo por Ordenar
+            Costo por Ordenar (S)
             <Input
               type="number"
               value={costoOrdenar}
@@ -54,7 +54,7 @@ export function Principal() {
             />
           </Etiqueta>
           <Etiqueta>
-            Costo por Mantener Anual
+            Costo por Mantener Anual (H)
             <Input
               type="number"
               value={costoMantener}
@@ -63,7 +63,7 @@ export function Principal() {
             />
           </Etiqueta>
           <Etiqueta>
-            Días Laborables al Año
+            Días Laborables al Año (W)
             <Input
               type="number"
               value={diasLaborables}
@@ -72,12 +72,11 @@ export function Principal() {
             />
           </Etiqueta>
           <Etiqueta>
-            Tiempo de Entrega (días)
+            Tiempo de Entrega (días) (LT)
             <Input
               type="number"
               value={tiempoEntrega}
               onChange={(e) => setTiempoEntrega(e.target.value)}
-              required
             />
           </Etiqueta>
           <Boton type="submit">Calcular</Boton>
@@ -90,7 +89,7 @@ export function Principal() {
             <Tarjeta titulo="EOQ" valor={eoq} simbolo="unidades" />
             <Tarjeta titulo="Costo Total" valor={costoTotal} simbolo="$" />
             <Tarjeta titulo="Punto de Reorden" valor={puntoReorden} simbolo="unidades" />
-            <Tarjeta titulo="Tiempo de Reorden" valor={tiempoReorden} simbolo="días" />
+            <Tarjeta titulo="Tiempo de Ciclo" valor={tiempoReorden} simbolo="días" />
           </ResultadosContainer>
         ) : (
           <Cargando />

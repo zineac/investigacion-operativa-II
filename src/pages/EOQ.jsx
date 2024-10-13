@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Principal } from "../EOQ-Variaciones/Principal";
+import { Lotes } from "../EOQ-Variaciones/Lotes";
+import { Faltantes } from "../EOQ-Variaciones/Faltantes";
+import { Descuentos } from "../EOQ-Variaciones/Descuentos";
+import { PeriodoUnico } from "../EOQ-Variaciones/PeriodoUnico";
 
 const modelos = [
   { id: 1, nombre: "Principal" },
-  { id: 2, nombre: "Faltantes" },
-  { id: 3, nombre: "Descuentos" },
-  { id: 4, nombre: "Periodo único" },
-  { id: 5, nombre: "Punto reorden con DM" },
-  { id: 6, nombre: "Revisión periódica con DM" },
-  { id: 7, nombre: "Revisión" },
+  { id: 2, nombre: "Lotes" },
+  { id: 3, nombre: "Faltantes" },
+  { id: 4, nombre: "Descuentos" },
+  { id: 5, nombre: "Periodo único" },
+  { id: 6, nombre: "Punto reorden con DP" },
+  { id: 7, nombre: "Revisión periódica con DP" },
   { id: 8, nombre: "Winston Sin Pérd." },
   { id: 9, nombre: "Winston Con Pérd." },
 ];
@@ -28,6 +32,7 @@ export function EOQ() {
           <BotonModelo
             key={modelo.id}
             onClick={() => manejarCambioModelo(modelo.id)}
+            seleccionado={modeloSeleccionado === modelo.id}
           >
             {modelo.nombre}
           </BotonModelo>
@@ -35,6 +40,10 @@ export function EOQ() {
       </BarraWrapper>
       <ContenidoWrapper>
         {modeloSeleccionado === 1 && <Principal />}
+        {modeloSeleccionado === 2 && <Lotes />}
+        {modeloSeleccionado === 3 && <Faltantes />}
+        {modeloSeleccionado === 4 && <Descuentos />}
+        {modeloSeleccionado === 5 && <PeriodoUnico />}
       </ContenidoWrapper>
     </ContenedorPrincipal>
   );
@@ -61,8 +70,11 @@ const BotonModelo = styled.button`
   padding: 10px;
   border: none;
   border-radius: 8px;
-  background-color: transparent;
+  background-color: ${({ seleccionado }) => (seleccionado ? "#007bff" : "transparent")};
+  color: ${({ seleccionado }) => (seleccionado ? "white" : "black")};
   cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+
   &:hover {
     background-color: #ddd;
   }

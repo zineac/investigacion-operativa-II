@@ -20,7 +20,7 @@ const TarjetaContainer = styled.div`}
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   width: 100%;
-  min-width: 400px;
+  min-width: 300px;
   text-align: center;
 
   strong {
