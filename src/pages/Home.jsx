@@ -20,10 +20,10 @@ export function Home() {
           El proyecto está desarrollado para el curso de <strong>Investigación de Operaciones</strong>. La estructura del proyecto incluye las siguientes secciones:
         </p>
         <ul>
-          <li>CPM.jsx: Análisis del método de camino crítico.</li>
-          <li>Decisiones.jsx: Evaluación de decisiones en situaciones complejas.</li>
-          <li>EOQ.jsx: Cálculo de la cantidad económica de pedido.</li>
-          <li>PERT.jsx: Análisis de evaluación y revisión de programas.</li>
+          <li><strong>CPM:</strong> Técnica utilizada para planificar y gestionar proyectos, identificando las tareas críticas que determinan la duración mínima del proyecto.</li>
+          <li><strong>PERT:</strong> Método para analizar y representar las tareas involucradas en la finalización de un proyecto, enfocándose en la incertidumbre de los tiempos de ejecución.</li>
+          <li><strong>EOQ:</strong> Modelo que calcula el volumen óptimo de pedido para minimizar los costos de inventario y pedido.</li>
+          <li><strong>Decisiones:</strong> Proceso de evaluar alternativas y elegir la mejor opción en situaciones complejas o inciertas.</li>
         </ul>
       </section>
     </MainContainer>

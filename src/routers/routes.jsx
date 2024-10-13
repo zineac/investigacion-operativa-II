@@ -9,8 +9,8 @@ export function MyRoutes() {
   return (
       <Routes>
         <Route path="/Home" element={<Home />} />
-        <Route path="/PERT" element={<PERT />} />
         <Route path="/CPM" element={<CPM />} />
+        <Route path="/PERT" element={<PERT />} />
         <Route path="/EOQ" element={<EOQ />}/>
         <Route path="/Decisiones" element={<Decisiones />} />
       </Routes>

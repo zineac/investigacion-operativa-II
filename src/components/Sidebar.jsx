@@ -42,14 +42,14 @@ const linksArray = [
     to: "/home",
   },
   {
-    label: "PERT",
-    icon: <MdOutlineAnalytics />,
-    to: "/PERT",
-  },
-  {
     label: "CPM",
     icon: <AiOutlineApartment />,
     to: "/CPM",
+  },
+  {
+    label: "PERT",
+    icon: <MdOutlineAnalytics />,
+    to: "/PERT",
   },
   {
     label: "EOQ",
