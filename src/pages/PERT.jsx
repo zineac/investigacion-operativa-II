@@ -66,7 +66,7 @@ export function PERT() {
 
   const [resultados, setResultados] = useState([]);
   const [rutaCritica, setRutaCritica] = useState([]);
-  const [desviacionEstandarCritica, setDesviacionEstandarCritica] = useState('');
+  const [desviacionEstandarCritica, setDesviacionEstandarCritica] = useState(0);
   const [duracionTotal, setDuracionTotal] = useState(0);
 
   const manejarCambioFilas = (e) => {
@@ -111,7 +111,7 @@ export function PERT() {
     setDuracionTotal(duracionTotal);
 
     // Calcular la desviación estándar de la ruta crítica
-    const sumaVarianzasRutaCritica = res.reduce((acumulado, actividad) => {
+    const sumaVarianzasRutaCritica = rutaCritica.reduce((acumulado, actividad) => {
       const actividadData = datos.find((dato) => dato.actividad === actividad);
       return acumulado + parseFloat(
         Math.pow((actividadData.pesimista - actividadData.optimista) / 6, 2)
@@ -224,9 +224,9 @@ export function PERT() {
               <tbody>
                 {resultados.map((resultado, index) => (
                   <tr key={index}>
-                    <td>{resultado.tiempoEsperado} unidades</td>
-                    <td>{resultado.varianza} unidades</td>
-                    <td>{resultado.desviacionEstandar} unidades</td>
+                    <td>{resultado.tiempoEsperado}</td>
+                    <td>{resultado.varianza}</td>
+                    <td>{resultado.desviacionEstandar}</td>
                   </tr>
                 ))}
               </tbody>
@@ -282,6 +282,7 @@ const Tarjeta = styled.div`
   flex: 1;  // Hacer que las tarjetas ocupen el mismo ancho
   max-width: 300px;
   text-align: center;
+  height: 100%;
 
   h3 {
     margin-bottom: 10px;
