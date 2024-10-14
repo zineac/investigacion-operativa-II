@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Cargando from "../components/Cargando.jsx";
 import { calcularRutaCritica } from "../utils/rutaCritica.js";
+import Nodo from "../components/Nodo.jsx";
 
 export function PERT() {
   const [filas, setFilas] = useState(8);
@@ -63,6 +64,7 @@ export function PERT() {
       predecesores: ["E", "F", "G"]
     }
   ]);
+  const [datosNodo, setDatosNodo] = useState(null);
 
   const [resultados, setResultados] = useState([]);
   const [rutaCritica, setRutaCritica] = useState([]);
@@ -106,6 +108,15 @@ export function PERT() {
       return { tiempoEsperado: tiempo, varianza, desviacionEstandar: desviacion };
     });
     setResultados(nuevosResultados);  
+
+    const nodosDatos = datos.map((fila, index) => ({
+      actividad: fila.actividad,
+      tiempoEsperado: nuevosResultados[index].tiempoEsperado,
+      predecesores: fila.predecesores
+    }));
+  
+    setDatosNodo(nodosDatos); // Verifica si el arreglo es correcto
+
     const { rutaCritica, duracionTotal } = calcularRutaCritica(datos);
     setRutaCritica(rutaCritica);
     setDuracionTotal(duracionTotal);
@@ -213,25 +224,7 @@ export function PERT() {
         {resultados.length > 0 ? (
           <Resultados>
             <h2>Resultados</h2>
-            <TablaResultados>
-              <thead>
-                <tr>
-                  <th>Tiempo Esperado</th>
-                  <th>Varianza</th>
-                  <th>Desviación Estándar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {resultados.map((resultado, index) => (
-                  <tr key={index}>
-                    <td>{resultado.tiempoEsperado}</td>
-                    <td>{resultado.varianza}</td>
-                    <td>{resultado.desviacionEstandar}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </TablaResultados>
-
+            <Nodo datos={datosNodo} />
             <ContenedorTarjetas>
               <Tarjeta>
                 <h3>Ruta Crítica</h3>
@@ -301,33 +294,6 @@ const Tarjeta = styled.div`
     color: #007bff;
   }
 `;
-
-
-const TablaResultados = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-
-  th {
-    background-color: #495057;
-    color: #f8f9fa;
-    padding: 12px;
-    text-align: left;
-    border-bottom: 2px solid #6c757d;
-    font-weight: bold;
-    font-size: 0.9em;
-  }
-
-  td {
-    color: #f8f9fa;
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #6c757d;
-    font-size: 0.9em;
-  }
-
-  }
-`;
-
 
 const Container = styled.div`
   display: flex;

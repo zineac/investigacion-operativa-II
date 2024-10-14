@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { calcularRC } from "../utils/RC";  // Asegúrate de tener esta función actualizada
 import Cargando from "../components/Cargando";
+import Nodo from "../components/Nodo";
 
 export function CPM() {
   const [filas, setFilas] = useState(6);
@@ -113,7 +114,9 @@ export function CPM() {
 
       <ResultadosContainer>
         {rutaCritica.length > 0 ? (
-          <div>
+          <Resultados>
+            <h2>Resultados</h2>
+            <Nodo datos={datos} />
             <ContenedorTarjetas>
               <Tarjeta>
                 <h3>Ruta Crítica</h3>
@@ -133,18 +136,19 @@ export function CPM() {
                 </div>
               </Tarjeta>
             </ContenedorTarjetas>
-          </div>
+          </Resultados>
         ) : <Cargando />}
       </ResultadosContainer>
     </Container>
   );
 }
 
+
 const ContenedorTarjetas = styled.div`
   display: flex;
-  gap: 20px;
-  justify-content: space-between;
-  align-items: flex-start;
+  gap: 20px;  // Espacio entre las tarjetas
+  justify-content: space-between;  // Distribuir las tarjetas
+  align-items: flex-start;  // Alinear las tarjetas en la parte superior
 `;
 
 const Tarjeta = styled.div`
@@ -152,9 +156,10 @@ const Tarjeta = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  flex: 1;
-  min-width: 200px;
+  flex: 1;  // Hacer que las tarjetas ocupen el mismo ancho
+  max-width: 300px;
   text-align: center;
+  height: 100%;
 
   h3 {
     margin-bottom: 10px;
@@ -172,6 +177,14 @@ const Tarjeta = styled.div`
     font-weight: bold;
     color: #007bff;
   }
+`;
+
+
+const Resultados = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
 `;
 
 const Container = styled.div`
