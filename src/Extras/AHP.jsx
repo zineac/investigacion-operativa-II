@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 export function AHP() {
-  const [numCriteria, setNumCriteria] = useState(4);
-  const [numAlternatives, setNumAlternatives] = useState(4);
-  const [criteria, setCriteria] = useState(['Criterio 1', 'Criterio 2', 'Criterio 3', 'Criterio 4']);
-  const [alternatives, setAlternatives] = useState(['Alternativa 1', 'Alternativa 2', 'Alternativa 3', 'Alternativa 4']);
-  
-  const [criterionMatrix, setCriterionMatrix] = useState([
+  const [numCriterios, setNumCriterios] = useState(4);
+  const [numAlternativas, setNumAlternativas] = useState(4);
+  const [criterios, setCriterios] = useState(['Criterio 1', 'Criterio 2', 'Criterio 3', 'Criterio 4']);
+  const [alternativas, setAlternativas] = useState(['Alternativa 1', 'Alternativa 2', 'Alternativa 3', 'Alternativa 4']);
+
+  const [matrizCriterios, setMatrizCriterios] = useState([
     [1, 5, 5, 7],
     [0.2, 1, 1, 3],
     [0.2, 1, 1, 3],
     [0.1429, 0.3333, 0.3333, 1]
   ]);
 
-  const [alternativeMatrices, setAlternativeMatrices] = useState([
+  const [matricesAlternativas, setMatricesAlternativas] = useState([
     [
       [1, 0.25, 4, 0.1667],
       [4, 1, 4, 0.25],
@@ -41,79 +41,97 @@ export function AHP() {
     ]
   ]);
 
-  const [priorityVector, setPriorityVector] = useState([]);
-  const [alternativePriorityVectors, setAlternativePriorityVectors] = useState([]);
+  const [vectorPrioridad, setVectorPrioridad] = useState([]);
+  const [vectoresPrioridadAlternativas, setVectoresPrioridadAlternativas] = useState([]);
+  const [puntajesFinales, setPuntajesFinales] = useState([]);
 
-  const handleMatrixChange = (matrixType, index1, index2, value, criterionIndex = null) => {
-    if (matrixType === 'criteria') {
-      const newMatrix = [...criterionMatrix];
-      newMatrix[index1][index2] = parseFloat(value);
-      newMatrix[index2][index1] = 1 / parseFloat(value);
-      setCriterionMatrix(newMatrix);
-    } else if (matrixType === 'alternatives') {
-      const newMatrices = [...alternativeMatrices];
-      newMatrices[criterionIndex][index1][index2] = parseFloat(value);
-      newMatrices[criterionIndex][index2][index1] = 1 / parseFloat(value);
-      setAlternativeMatrices(newMatrices);
+  const manejarCambioMatriz = (tipoMatriz, indice1, indice2, valor, indiceCriterio = null) => {
+    if (tipoMatriz === 'criterios') {
+      const nuevaMatriz = [...matrizCriterios];
+      nuevaMatriz[indice1][indice2] = parseFloat(valor);
+      nuevaMatriz[indice2][indice1] = 1 / parseFloat(valor);
+      setMatrizCriterios(nuevaMatriz);
+    } else if (tipoMatriz === 'alternativas') {
+      const nuevasMatrices = [...matricesAlternativas];
+      nuevasMatrices[indiceCriterio][indice1][indice2] = parseFloat(valor);
+      nuevasMatrices[indiceCriterio][indice2][indice1] = 1 / parseFloat(valor);
+      setMatricesAlternativas(nuevasMatrices);
     }
   };
 
-  const calculatePriorityVectors = () => {
-    const calculatePriority = (matrix) => {
-      const size = matrix.length;
-      const columnSums = Array(size).fill(0);
+  const calcularVectoresPrioridad = () => {
+    const calcularPrioridad = (matriz) => {
+      const tamaño = matriz.length;
+      const sumaColumnas = Array(tamaño).fill(0);
 
-      for (let i = 0; i < size; i++) {
-        for (let j = 0; j < size; j++) {
-          columnSums[j] += matrix[i][j];
+      for (let i = 0; i < tamaño; i++) {
+        for (let j = 0; j < tamaño; j++) {
+          sumaColumnas[j] += matriz[i][j];
         }
       }
 
-      const normalizedMatrix = matrix.map((row, i) =>
-        row.map((value, j) => value / columnSums[j])
+      const matrizNormalizada = matriz.map((fila, i) =>
+        fila.map((valor, j) => valor / sumaColumnas[j])
       );
 
-      return normalizedMatrix.map(
-        (row) => row.reduce((sum, val) => sum + val, 0) / size
+      return matrizNormalizada.map(
+        (fila) => fila.reduce((suma, val) => suma + val, 0) / tamaño
       );
     };
 
-    const newPriorityVector = calculatePriority(criterionMatrix);
-    setPriorityVector(newPriorityVector);
+    const nuevoVectorPrioridad = calcularPrioridad(matrizCriterios);
+    setVectorPrioridad(nuevoVectorPrioridad);
 
-    const newAlternativePriorityVectors = alternativeMatrices.map((matrix) =>
-      calculatePriority(matrix)
+    const nuevosVectoresPrioridadAlternativas = matricesAlternativas.map((matriz) =>
+      calcularPrioridad(matriz)
     );
-    setAlternativePriorityVectors(newAlternativePriorityVectors);
+    setVectoresPrioridadAlternativas(nuevosVectoresPrioridadAlternativas);
+
+    // Calcular puntajes finales
+    const calcularPuntajesFinales = (vectoresAltPrioridad, vectorCritPrioridad) => {
+      const numAlternativas = vectoresAltPrioridad[0].length;
+      const puntajesFinales = Array(numAlternativas).fill(0);
+
+      for (let i = 0; i < numAlternativas; i++) {
+        for (let j = 0; j < vectorCritPrioridad.length; j++) {
+          puntajesFinales[i] += vectoresAltPrioridad[j][i] * vectorCritPrioridad[j];
+        }
+      }
+
+      return puntajesFinales;
+    };
+
+    const puntajes = calcularPuntajesFinales(nuevosVectoresPrioridadAlternativas, nuevoVectorPrioridad);
+    setPuntajesFinales(puntajes);
   };
 
-  const handleNumCriteriaChange = (e) => {
-    const value = parseInt(e.target.value);
-    setNumCriteria(value);
-    setCriteria(Array.from({ length: value }, (_, i) => `Criterio ${i + 1}`));
-    setCriterionMatrix(Array.from({ length: value }, () => Array(value).fill(1)));
-    setAlternativeMatrices(Array.from({ length: value }, () => Array.from({ length: numAlternatives }, () => Array(numAlternatives).fill(1))));
+  const manejarCambioNumCriterios = (e) => {
+    const valor = parseInt(e.target.value);
+    setNumCriterios(valor);
+    setCriterios(Array.from({ length: valor }, (_, i) => `Criterio ${i + 1}`));
+    setMatrizCriterios(Array.from({ length: valor }, () => Array(valor).fill(1)));
+    setMatricesAlternativas(Array.from({ length: valor }, () => Array.from({ length: numAlternativas }, () => Array(numAlternativas).fill(1))));
   };
 
-  const handleNumAlternativesChange = (e) => {
-    const value = parseInt(e.target.value);
-    setNumAlternatives(value);
-    setAlternatives(Array.from({ length: value }, (_, i) => `Alternativa ${i + 1}`));
-    setAlternativeMatrices(Array.from({ length: numCriteria }, () => Array.from({ length: value }, () => Array(value).fill(1))));
+  const manejarCambioNumAlternativas = (e) => {
+    const valor = parseInt(e.target.value);
+    setNumAlternativas(valor);
+    setAlternativas(Array.from({ length: valor }, (_, i) => `Alternativa ${i + 1}`));
+    setMatricesAlternativas(Array.from({ length: numCriterios }, () => Array.from({ length: valor }, () => Array(valor).fill(1))));
   };
 
   return (
     <Container>
-      <h2>Análisis de AHP</h2>
+      <h2>Metodo de AHP</h2>
 
       <Section>
         <label>
           Cantidad de Criterios:
-          <Input type="number" value={numCriteria} onChange={handleNumCriteriaChange} min="1" />
+          <Input type="number" value={numCriterios} onChange={manejarCambioNumCriterios} min="1" />
         </label>
         <label>
           Cantidad de Alternativas:
-          <Input type="number" value={numAlternatives} onChange={handleNumAlternativesChange} min="1" />
+          <Input type="number" value={numAlternativas} onChange={manejarCambioNumAlternativas} min="1" />
         </label>
       </Section>
 
@@ -121,15 +139,15 @@ export function AHP() {
         <h3>Matriz de Criterios</h3>
         <table>
           <tbody>
-            {criterionMatrix.map((row, i) => (
+            {matrizCriterios.map((fila, i) => (
               <tr key={i}>
-                {row.map((value, j) => (
+                {fila.map((valor, j) => (
                   <td key={j}>
                     <Input
                       type="number"
-                      value={value}
+                      value={valor}
                       onChange={(e) =>
-                        handleMatrixChange('criteria', i, j, e.target.value)
+                        manejarCambioMatriz('criterios', i, j, e.target.value)
                       }
                       disabled={i === j}
                     />
@@ -141,25 +159,25 @@ export function AHP() {
         </table>
       </Section>
 
-      {criteria.map((criterion, criterionIndex) => (
-        <Section key={criterionIndex}>
-          <h3>Matriz de Alternativas para {criterion}</h3>
+      {criterios.map((criterio, indiceCriterio) => (
+        <Section key={indiceCriterio}>
+          <h3>Matriz de Alternativas para {criterio}</h3>
           <table>
             <tbody>
-              {alternativeMatrices[criterionIndex].map((row, i) => (
+              {matricesAlternativas[indiceCriterio].map((fila, i) => (
                 <tr key={i}>
-                  {row.map((value, j) => (
+                  {fila.map((valor, j) => (
                     <td key={j}>
                       <Input
                         type="number"
-                        value={value}
+                        value={valor}
                         onChange={(e) =>
-                          handleMatrixChange(
-                            'alternatives',
+                          manejarCambioMatriz(
+                            'alternativas',
                             i,
                             j,
                             e.target.value,
-                            criterionIndex
+                            indiceCriterio
                           )
                         }
                         disabled={i === j}
@@ -173,28 +191,37 @@ export function AHP() {
         </Section>
       ))}
 
-      <Button onClick={calculatePriorityVectors}>Calcular Vectores de Prioridad</Button>
+      <Button onClick={calcularVectoresPrioridad}>Calcular Vectores de Prioridad</Button>
 
       <Section>
         <h3>Vector de Prioridad de Criterios</h3>
-        {priorityVector.map((value, index) => (
+        {vectorPrioridad.map((valor, index) => (
           <p key={index}>
-            {criteria[index]}: {value.toFixed(4)}
+            {criterios[index]}: {valor.toFixed(4)}
           </p>
         ))}
       </Section>
 
       <Section>
         <h3>Vectores de Prioridad de Alternativas</h3>
-        {alternativePriorityVectors.map((vector, index) => (
+        {vectoresPrioridadAlternativas.map((vector, index) => (
           <div key={index}>
-            <h4>Para {criteria[index]}</h4>
-            {vector.map((value, altIndex) => (
-              <p key={altIndex}>
-                {alternatives[altIndex]}: {value.toFixed(4)}
+            <h4>Para {criterios[index]}</h4>
+            {vector.map((valor, indiceAlt) => (
+              <p key={indiceAlt}>
+                {alternativas[indiceAlt]}: {valor.toFixed(4)}
               </p>
             ))}
           </div>
+        ))}
+      </Section>
+
+      <Section>
+        <h3>Resultados Finales</h3>
+        {puntajesFinales.map((puntaje, index) => (
+          <p key={index}>
+            {alternativas[index]}: {puntaje.toFixed(4)}
+          </p>
         ))}
       </Section>
     </Container>
@@ -203,30 +230,51 @@ export function AHP() {
 
 const Container = styled.div`
   padding: 20px;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 `;
 
 const Section = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 `;
 
 const Input = styled.input`
-  margin: 5px;
-  padding: 8px;
-  width: 60px;
-  box-sizing: border-box;
+  margin: 10px 15px;
+  padding: 10px;
+  width: 80px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
 `;
 
 const Button = styled.button`
-  padding: 10px 20px;
-  background-color: #007bff;
+  padding: 12px 25px;
+  background-color: #17a2b8;  /* Celeste para el botón */
   color: white;
   border: none;
   border-radius: 5px;
+  font-size: 16px;
   cursor: pointer;
+  margin-bottom: 25px;  /* Margin-bottom de 20px */
+  transition: background-color 0.3s;
+
   &:hover {
-    background-color: #0056b3;
+    background-color: #138496;
   }
 `;
 

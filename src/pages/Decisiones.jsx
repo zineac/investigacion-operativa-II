@@ -6,6 +6,7 @@ import { CriterioLaplace } from "../Decisiones-Metodos/Criteriolaplace";
 import { CriterioHurwicz } from "../Decisiones-Metodos/CriterioHurwics";
 import { CriterioSavage } from "../Decisiones-Metodos/CriterioSavage";
 import { AHP } from "../Extras/AHP";
+import { Arbol } from "../Extras/Arbol";
 
 const criterios = [
   { id: 1, nombre: "Criterio pesimista" },
@@ -14,6 +15,7 @@ const criterios = [
   { id: 4, nombre: "Criterio de Hurwics" },
   { id: 5, nombre: "Criterio de Savage" },
   { id: 6, nombre: "Metodo AHP" },
+  { id: 7, nombre: "Arbol" }
 ];
 
 export function Decisiones() {
@@ -43,6 +45,7 @@ export function Decisiones() {
         {criterioSeleccionado === 4 && <CriterioHurwicz />}
         {criterioSeleccionado === 5 && <CriterioSavage />}
         {criterioSeleccionado === 6 && <AHP />}
+        {criterioSeleccionado === 7 && <Arbol />}
       </ContenidoWrapper>
     </ContenedorPrincipal>
   );
