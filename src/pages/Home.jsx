@@ -6,7 +6,7 @@ export function Home() {
       <section>
         <h2>Integrantes:</h2>
         <ul>
-          <li>Vicente Bautista Carlos Nulfo (2019-119097)</li>
+          <li>Vicente Bautista Carlos Nulfo (2022-119097)</li>
           <li>Gutiérrez Mamani Diego Alonso (2019-119046)</li>
         </ul>
       </section>
