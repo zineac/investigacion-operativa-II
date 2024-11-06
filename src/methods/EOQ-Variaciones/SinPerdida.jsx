@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Cargando from "../components/Cargando";
-import Tarjeta from "../components/Tarjeta";
-import { inversaDistribucionNormal } from "../utils/probabilidadInversa";
+import Cargando from '../../components/Cargando'
+import Tarjeta from "../../components/Tarjeta";
+import { inversaDistribucionNormal } from "../../utils/probabilidadInversa";
 
 export function SinPerdida() {
   const [mediaDemanda, setMediaDemanda] = useState(100); // μD

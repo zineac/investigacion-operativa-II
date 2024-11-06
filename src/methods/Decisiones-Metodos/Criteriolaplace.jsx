@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Cargando from '../components/Cargando';
+import Cargando from '../../components/Cargando';
 
 export function CriterioLaplace() {
   const [numDecisiones, setNumDecisiones] = useState(3);

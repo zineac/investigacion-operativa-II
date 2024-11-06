@@ -6,25 +6,31 @@ export function Home() {
       <section>
         <h2>Integrantes:</h2>
         <ul>
-          <li>Vicente Bautista Carlos Nulfo (2022-119097)</li>
-          <li>Gutiérrez Mamani Diego Alonso (2019-119046)</li>
+          <li>Carlos Nulfo Vicente Bautista</li>
+          <li>Diego Alonso Gutiérrez Mamani</li>
         </ul>
-      </section>
-      <section>
-        <h2>Profesora:</h2>
-        <p>ANA SILVIA CORI MORON</p>
       </section>
       <section>
         <h2>Descripción del Proyecto:</h2>
         <p>
-          El proyecto está desarrollado para el curso de <strong>Investigación de Operaciones</strong>. La estructura del proyecto incluye las siguientes secciones:
+          Este proyecto fue desarrollado para el curso de <strong>Investigación de Operaciones</strong>, abordando las siguientes técnicas:
         </p>
         <ul>
-          <li><strong>CPM:</strong> Técnica utilizada para planificar y gestionar proyectos, identificando las tareas críticas que determinan la duración mínima del proyecto.</li>
-          <li><strong>PERT:</strong> Método para analizar y representar las tareas involucradas en la finalización de un proyecto, enfocándose en la incertidumbre de los tiempos de ejecución.</li>
-          <li><strong>EOQ:</strong> Modelo que calcula el volumen óptimo de pedido para minimizar los costos de inventario y pedido.</li>
-          <li><strong>Decisiones:</strong> Proceso de evaluar alternativas y elegir la mejor opción en situaciones complejas o inciertas.</li>
-          <li><strong>Teoría de Colas:</strong> Técnica que estudia y modela el comportamiento de sistemas de espera y servicio, optimizando recursos y tiempos en situaciones donde se forman filas o colas.</li>
+          <li>
+            <strong>CPM:</strong> Método de planificación que identifica las tareas críticas para cumplir con los plazos del proyecto.
+          </li>
+          <li>
+            <strong>PERT:</strong> Técnica que analiza la duración de las tareas, considerando la incertidumbre en sus tiempos de ejecución.
+          </li>
+          <li>
+            <strong>EOQ:</strong> Modelo que optimiza el volumen de pedidos para reducir costos de inventario y pedidos.
+          </li>
+          <li>
+            <strong>Decisiones:</strong> Proceso para evaluar alternativas y seleccionar la mejor opción en situaciones complejas.
+          </li>
+          <li>
+            <strong>Teoría de Colas:</strong> Estudio y optimización de sistemas de espera para mejorar la eficiencia en la atención de clientes.
+          </li>
         </ul>
       </section>
     </MainContainer>
@@ -32,54 +38,44 @@ export function Home() {
 }
 
 const MainContainer = styled.main`
-  height: 100vh;
-  overflow-y: auto;
   padding: 40px;
-  background: linear-gradient(135deg, #e9ecef, #dee2e6);
   font-family: 'Roboto', sans-serif;
-  color: #495057;
-
-  h1 {
-    text-align: center;
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 40px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
+  color: #5b5b5b;
 
   h2 {
-    font-size: 1.5rem;
-    color: #007bff;
-    margin-bottom: 10px;
+    font-size: 1.8rem;
+    color: #5b5b5b;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
   }
 
   section {
-    margin-bottom: 30px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 0px 10px 2px rgba(0, 0, 0, 0.15);
   }
 
   ul {
-    list-style-type: disc;
     padding-left: 40px;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     color: #343a40;
   }
 
   li {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
 
   p {
     font-size: 1.1rem;
     color: #495057;
-    line-height: 1.6;
+    line-height: 1.7;
   }
 
   strong {
     font-weight: bold;
+    color: #007bff;
   }
 `;

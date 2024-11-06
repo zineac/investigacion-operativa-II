@@ -1,58 +1,58 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Cargando from "../components/Cargando";
-import Tarjeta from "../components/Tarjeta";
+import Cargando from '../../components/Cargando'
+import Tarjeta from "../../components/Tarjeta";
 
-export function Faltantes() {
-  const [demanda, setDemanda] = useState(2000);
-  const [costoOrdenar, setCostoOrdenar] = useState(25);
-  const [costoMantener, setCostoMantener] = useState(10);
-  const [costoFaltante, setCostoFaltante] = useState(30);
-  const [diasLaborables, setDiasLaborables] = useState(250);
-  const [cantidadOptima, setCantidadOptima] = useState(null);
-  const [nivelMaximoInventario, setNivelMaximoInventario] = useState(null);
-  const [pedidosEspera, setPedidosEspera] = useState(null);
+export function Lotes() {
+  const [tasaProduccionDiaria, setTasaProduccionDiaria] = useState(240);
+  const [demandaDiaria, setDemandaDiaria] = useState(104);
+  const [costoOrdenar, setCostoOrdenar] = useState(135);
+  const [costoMantener, setCostoMantener] = useState(1.08);
+  const [diasLaborables, setDiasLaborables] = useState(250); 
+  const [tiempoEntrega, setTiempoEntrega] = useState(5);
+  const [epq, setEpq] = useState(null);
   const [costoTotal, setCostoTotal] = useState(null);
+  const [puntoReorden, setPuntoReorden] = useState(null);
+  const [tiempoReorden, setTiempoReorden] = useState(null);
 
-  const calcularFaltantes = (e) => {
+  const calcularEPQ = (e) => {
     e.preventDefault();
-  
-    // Cálculo de Q* (Cantidad óptima de pedido)
-    const cantidadOptimaCalculada = Math.sqrt(
-      (2 * demanda * costoOrdenar) / costoMantener * ((costoMantener + costoFaltante) / costoFaltante)
-    );
-  
-    // Cálculo de Imax (Nivel Máximo de Inventario)
-    const nivelMaximoInventarioCalculado = cantidadOptimaCalculada * (costoFaltante / (costoMantener + costoFaltante));
-  
-    // Cálculo de S* (Pedidos en Espera)
-    const pedidosEsperaCalculado = cantidadOptimaCalculada - nivelMaximoInventarioCalculado;
-  
-    // Cálculo del Costo Total (CT)
-    const costoTotalCalculado = 
-    (demanda / cantidadOptimaCalculada) * costoOrdenar + 
-    ((cantidadOptimaCalculada - pedidosEsperaCalculado) ** 2 / (2 * cantidadOptimaCalculada)) * costoMantener + 
-    ((pedidosEsperaCalculado ** 2) / (2 * cantidadOptimaCalculada)) * costoFaltante;
-  
-    // Seteamos los resultados en los estados
-    setCantidadOptima(cantidadOptimaCalculada);
-    setNivelMaximoInventario(nivelMaximoInventarioCalculado);
-    setPedidosEspera(pedidosEsperaCalculado);
-    setCostoTotal(costoTotalCalculado);
-  };  
-  
+
+    const Q = Math.sqrt((2 * demandaDiaria * diasLaborables * costoOrdenar) / (costoMantener * (1 - demandaDiaria / tasaProduccionDiaria)));
+    setEpq(Q);
+
+    const CostoTotal = (1 / 2) * (1 - demandaDiaria / tasaProduccionDiaria) * Q * costoMantener + (demandaDiaria * diasLaborables / Q) * costoOrdenar;
+    setCostoTotal(CostoTotal);
+
+    const reorden = demandaDiaria * tiempoEntrega;
+    setPuntoReorden(reorden);
+
+    const tiempoReordenCalc = (diasLaborables * Q) / (demandaDiaria * diasLaborables);
+    setTiempoReorden(tiempoReordenCalc);
+  };
+
   return (
     <Contenedor>
       <FormularioContainer>
-        <form onSubmit={calcularFaltantes}>
+        <form onSubmit={calcularEPQ}>
           <h2>Parámetros de Entrada</h2>
-
+          
           <Etiqueta>
-            Demanda Anual (D)
+            Tasa de Producción Diaria (p)
             <Input
               type="number"
-              value={demanda}
-              onChange={(e) => setDemanda(e.target.value)}
+              value={tasaProduccionDiaria}
+              onChange={(e) => setTasaProduccionDiaria(e.target.value)}
+              required
+            />
+          </Etiqueta>
+          
+          <Etiqueta>
+            Demanda Diaria (d)
+            <Input
+              type="number"
+              value={demandaDiaria}
+              onChange={(e) => setDemandaDiaria(e.target.value)}
               required
             />
           </Etiqueta>
@@ -66,9 +66,8 @@ export function Faltantes() {
               required
             />
           </Etiqueta>
-
           <Etiqueta>
-            Costo por Mantener (H)
+            Costo por Mantener Anual (H)
             <Input
               type="number"
               value={costoMantener}
@@ -76,17 +75,6 @@ export function Faltantes() {
               required
             />
           </Etiqueta>
-
-          <Etiqueta>
-            Costo por Faltante (B)
-            <Input
-              type="number"
-              value={costoFaltante}
-              onChange={(e) => setCostoFaltante(e.target.value)}
-              required
-            />
-          </Etiqueta>
-
           <Etiqueta>
             Días Laborables al Año (W)
             <Input
@@ -96,18 +84,26 @@ export function Faltantes() {
               required
             />
           </Etiqueta>
+          <Etiqueta>
+            Tiempo de Espera (días) (LT)
+            <Input
+              type="number"
+              value={tiempoEntrega}
+              onChange={(e) => setTiempoEntrega(e.target.value)}
+            />
+          </Etiqueta>
 
           <Boton type="submit">Calcular</Boton>
         </form>
       </FormularioContainer>
 
       <Resultados>
-        {cantidadOptima ? (
+        {epq !== null ? (
           <ResultadosContainer>
-            <Tarjeta titulo="Cantidad Óptima (Q*)" valor={cantidadOptima} simbolo="unidades" />
-            <Tarjeta titulo="Cantidad Óptima (S*)" valor={pedidosEspera} simbolo="unidades" />
-            <Tarjeta titulo="Nivel Máximo de Inventario (Imax)" valor={nivelMaximoInventario} simbolo="unidades" />
-            <Tarjeta titulo="Costo Total (incluyendo unidades)" valor={costoTotal} simbolo="$" />
+            <Tarjeta titulo="EPQ" valor={epq} simbolo="unidades" />
+            <Tarjeta titulo="Costo Total" valor={costoTotal} simbolo="$" />
+            <Tarjeta titulo="Punto de Reorden" valor={puntoReorden} simbolo="unidades" />
+            <Tarjeta titulo="Tiempo entre Fases" valor={tiempoReorden} simbolo="días" />
           </ResultadosContainer>
         ) : (
           <Cargando />

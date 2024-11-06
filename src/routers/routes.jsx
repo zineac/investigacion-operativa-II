@@ -28,5 +28,5 @@ export default MyRoutes;
 const RoutesContainer = styled.div`
   min-height: 100%;
   overflow-y: auto;
-  background: #e5e5e5;
+  background: #f3f3f3;
 `;

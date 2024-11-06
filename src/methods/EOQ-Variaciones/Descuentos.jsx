@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Tarjeta from "../components/Tarjeta"; // Asegúrate de que esta ruta sea correcta
-import Cargando from "../components/Cargando";
+import Cargando from '../../components/Cargando'
+import Tarjeta from "../../components/Tarjeta";
 
 export function Descuentos() {
   const [demanda, setDemanda] = useState(5000);

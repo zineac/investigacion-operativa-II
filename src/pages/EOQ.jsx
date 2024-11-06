@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Principal } from "../EOQ-Variaciones/Principal";
-import { Lotes } from "../EOQ-Variaciones/Lotes";
-import { Faltantes } from "../EOQ-Variaciones/Faltantes";
-import { Descuentos } from "../EOQ-Variaciones/Descuentos";
-import { PeriodoUnico } from "../EOQ-Variaciones/PeriodoUnico";
-import { PuntoReorden } from "../EOQ-Variaciones/PuntoReorden";
-import { RevisionPeriodica } from "../EOQ-Variaciones/RevisionPeriodica";
-import { SinPerdida } from "../EOQ-Variaciones/SinPerdida";
-import { ConPerdida } from "../EOQ-Variaciones/ConPerdida";
+import { Principal } from "../methods/EOQ-Variaciones/Principal";
+import { Lotes } from "../methods/EOQ-Variaciones/Lotes";
+import { Faltantes } from "../methods/EOQ-Variaciones/Faltantes";
+import { Descuentos } from "../methods/EOQ-Variaciones/Descuentos";
+import { PeriodoUnico } from "../methods/EOQ-Variaciones/PeriodoUnico";
+import { PuntoReorden } from "../methods/EOQ-Variaciones/PuntoReorden";
+import { RevisionPeriodica } from "../methods/EOQ-Variaciones/RevisionPeriodica";
+import { SinPerdida } from "../methods/EOQ-Variaciones/SinPerdida";
+import { ConPerdida } from "../methods/EOQ-Variaciones/ConPerdida";
 
 const modelos = [
   { id: 1, nombre: "Principal" },

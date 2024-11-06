@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Cargando from "../components/Cargando";
-import Tarjeta from "../components/Tarjeta";
+import Cargando from '../../components/Cargando'
+import Tarjeta from "../../components/Tarjeta";
 
 export function PeriodoUnico() {
   const [mediaDemanda, setMediaDemanda] = useState(150);

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { CriterioOptimista } from "../Decisiones-Metodos/CriterioOptimista";
-import { CriterioPesimista } from "../Decisiones-Metodos/CriterioPesimista";
-import { CriterioLaplace } from "../Decisiones-Metodos/Criteriolaplace";
-import { CriterioHurwicz } from "../Decisiones-Metodos/CriterioHurwics";
-import { CriterioSavage } from "../Decisiones-Metodos/CriterioSavage";
-import { AHP } from "../Extras/AHP";
-import { Arbol } from "../Extras/Arbol";
-import { ValorEsperado } from "../Extras/ValorEsperado";
+import { CriterioOptimista } from "../methods/Decisiones-Metodos/CriterioOptimista";
+import { CriterioPesimista } from "../methods/Decisiones-Metodos/CriterioPesimista";
+import { CriterioLaplace } from "../methods/Decisiones-Metodos/Criteriolaplace";
+import { CriterioHurwicz } from "../methods/Decisiones-Metodos/CriterioHurwics";
+import { CriterioSavage } from "../methods/Decisiones-Metodos/CriterioSavage";
+import { AHP } from "../methods/Extras/AHP";
+import { Arbol } from "../methods/Extras/Arbol";
+import { ValorEsperado } from "../methods/Extras/ValorEsperado";
 
 const criterios = [
   { id: 1, nombre: "Criterio pesimista" },

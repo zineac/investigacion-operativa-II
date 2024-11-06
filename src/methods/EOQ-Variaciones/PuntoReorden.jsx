@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import styled from "styled-components";
-import Cargando from "../components/Cargando";
-import Tarjeta from "../components/Tarjeta";
+import styled from "styled-components"; // Asegúrate de tener esta dependencia instalada
+import { inversaDistribucionNormal } from "../../utils/probabilidadInversa"; // Asegúrate de que la ruta sea correcta
+import Cargando from '../../components/Cargando'
+import Tarjeta from "../../components/Tarjeta";
 
-export function Principal() {
-  const [demanda, setDemanda] = useState(104000);
-  const [costoOrdenar, setCostoOrdenar] = useState(32);
-  const [costoMantener, setCostoMantener] = useState(2);
+export function PuntoReorden() {
+  const [demandaMediaEspera, setDemandaMediaEspera] = useState(154);
+  const [costoOrdenar, setCostoOrdenar] = useState(12);
+  const [costoMantener, setCostoMantener] = useState(1.2);
   const [diasLaborables, setDiasLaborables] = useState(250);
-  const [tiempoEntrega, setTiempoEntrega] = useState(2);
+  const [desviacionEstandar, setDesviacionEstandar] = useState(25);
+  const [nivelServicio, setNivelServicio] = useState(95); // Porcentaje
   const [eoq, setEoq] = useState(null);
   const [costoTotal, setCostoTotal] = useState(null);
   const [puntoReorden, setPuntoReorden] = useState(null);
@@ -17,16 +19,27 @@ export function Principal() {
   const calcularEOQ = (e) => {
     e.preventDefault();
 
-    const Q = Math.sqrt((2 * demanda * costoOrdenar) / costoMantener);
+    // Convertir el porcentaje de nivel de servicio a decimal
+    const z = inversaDistribucionNormal(nivelServicio / 100);
+    console.log(z)
+
+    // Calcular la demanda anual
+    const demandaAnual = demandaMediaEspera * 52; // 52 semanas en un año
+
+    // Cálculo EOQ
+    const Q = Math.sqrt((2 * demandaAnual * costoOrdenar) / costoMantener);
     setEoq(Q);
 
-    const CostoTotal = (Q * costoMantener) / 2 + (costoOrdenar * demanda) / Q;
-    setCostoTotal(CostoTotal);
-
-    const reorden = (demanda / diasLaborables) * tiempoEntrega;
+    // Cálculo del punto de reorden considerando el stock de seguridad
+    const reorden = demandaMediaEspera + z * desviacionEstandar;
     setPuntoReorden(reorden);
 
-    const tiempoReordenCalc = Q / (demanda / diasLaborables);
+    // Cálculo Costo Total
+    const costoTotalCalc = ((Q * costoMantener) / 2) + ((costoOrdenar * demandaAnual) / Q) + (reorden - demandaMediaEspera) * costoMantener;
+    setCostoTotal(costoTotalCalc);
+
+    // Cálculo del tiempo de reorden
+    const tiempoReordenCalc = Q / (demandaAnual / diasLaborables);
     setTiempoReorden(tiempoReordenCalc);
   };
 
@@ -36,12 +49,11 @@ export function Principal() {
         <form onSubmit={calcularEOQ}>
           <h2>Parámetros de Entrada</h2>
           <Etiqueta>
-            Demanda Anual (D)
+            Demanda Media (Semanas)
             <Input
               type="number"
-              value={demanda}
-              onChange={(e) => setDemanda(e.target.value)}
-              required
+              value={demandaMediaEspera}
+              onChange={(e) => setDemandaMediaEspera(e.target.value)}
             />
           </Etiqueta>
           <Etiqueta>
@@ -72,11 +84,20 @@ export function Principal() {
             />
           </Etiqueta>
           <Etiqueta>
-            Tiempo de Entrega (días) (LT)
+            Desviación Estándar
             <Input
               type="number"
-              value={tiempoEntrega}
-              onChange={(e) => setTiempoEntrega(e.target.value)}
+              value={desviacionEstandar}
+              onChange={(e) => setDesviacionEstandar(e.target.value)}
+            />
+          </Etiqueta>
+          <Etiqueta>
+            Nivel de Servicio (%)
+            <Input
+              type="number"
+              value={nivelServicio}
+              onChange={(e) => setNivelServicio(e.target.value)}
+              required
             />
           </Etiqueta>
           <Boton type="submit">Calcular</Boton>

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { M_M_1 } from "../Tcolas-Metodos/m_m_1";
-import { M_M_C } from "../Tcolas-Metodos/m_m_c";
-import { M_G_1 } from "../Tcolas-Metodos/m_g_1";
-import { M_G_C_0 } from "../Tcolas-Metodos/m_g_c_0";
-import { M_M_S_K } from "../Tcolas-Metodos/m_m_s_k";
+import { M_M_1 } from "../methods/Tcolas-Metodos/m_m_1"
+import { M_M_C } from "../methods/Tcolas-Metodos/m_m_c";
+import { M_G_1 } from "../methods/Tcolas-Metodos/m_g_1";
+import { M_G_C_0 } from "../methods/Tcolas-Metodos/m_g_c_0";
+import { M_M_S_K } from "../methods/Tcolas-Metodos/m_m_s_k";
 
 const criterios = [
   { id: 1, nombre: "Modelo M/M/1" },

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Cargando from '../components/Cargando';
+import Cargando from '../../components/Cargando'
 
 export function M_M_1() {
   const [tasaLlegada, setTasaLlegada] = useState("1"); // λ: tasa de llegada

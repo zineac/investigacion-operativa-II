@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Cargando from '../components/Cargando';
+import Cargando from '../../components/Cargando';
 
-export function CriterioOptimista() {
+export function CriterioPesimista() {
   const [numDecisiones, setNumDecisiones] = useState(3);
   const [numEstados, setNumEstados] = useState(3);
   const [decisiones, setDecisiones] = useState(['Tecnología 1', 'Tecnología 2', 'Tecnología 3']);
@@ -50,10 +50,10 @@ export function CriterioOptimista() {
   };
 
   const calcularMejorResultado = () => {
-    const maximosPorFila = resultados.map(fila => Math.max(...fila));
-    const mejor = Math.max(...maximosPorFila);
-    const filaMejor = maximosPorFila.indexOf(mejor);
-    const columnaMejor = resultados[filaMejor].indexOf(mejor); // Obtener la columna correspondiente al mejor resultado
+    const minimosPorFila = resultados.map(fila => Math.min(...fila));
+    const mejor = Math.max(...minimosPorFila);
+    const filaMejor = minimosPorFila.indexOf(mejor);
+    const columnaMejor = resultados[filaMejor].indexOf(Math.min(...resultados[filaMejor])); // Obtener la columna correspondiente al mejor resultado
 
     setMejorResultado(mejor);
     setMejorFila(filaMejor);

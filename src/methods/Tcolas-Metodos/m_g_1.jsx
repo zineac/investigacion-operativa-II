@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Cargando from '../components/Cargando';
+import Cargando from '../../components/Cargando'
 
-export function M_M_S_K() {
+export function M_G_1() {
   const [tasaLlegada, setTasaLlegada] = useState("1"); // λ: tasa de llegada
   const [tasaServicio, setTasaServicio] = useState("2"); // μ: tasa de servicio
-  const [numServidores, setNumServidores] = useState("2"); // s: número de servidores
-  const [capacidadSistema, setCapacidadSistema] = useState("5"); // K: capacidad del sistema
+  const [coefVarServicio, setCoefVarServicio] = useState("1"); // C_s: Coeficiente de variación del tiempo de servicio
   const [unidadTiempo, setUnidadTiempo] = useState("segundos"); // Unidad de tiempo
   const [resultados, setResultados] = useState(null);
 
   const handleInputChange = (setter) => (e) => {
     const value = e.target.value;
-    if (/^[0-9.,]*$/.test(value)) {
+    if (/^[0-9.,]*$/.test(value)) { // Permitir solo dígitos, puntos y comas
       setter(value);
     }
   };
@@ -26,49 +25,24 @@ export function M_M_S_K() {
   const calcularResultados = () => {
     const lambda = parseFloat(tasaLlegada);
     const mu = parseFloat(tasaServicio);
-    const s = parseInt(numServidores);
-    const K = parseInt(capacidadSistema);
+    const Cs = parseFloat(coefVarServicio);
 
-    if (mu > 0 && lambda > 0 && s > 0 && K >= s) {
-      const rho = lambda / mu; // Tasa de tráfico
-      const factorial = (n) => (n <= 1 ? 1 : n * factorial(n - 1));
-
-      // Probabilidad de que el sistema esté vacío (P0)
-      let P0 = 0;
-      for (let n = 0; n <= s - 1; n++) {
-        P0 += Math.pow(rho, n) / factorial(n);
-      }
-      P0 += (Math.pow(rho, s) / factorial(s)) * ((1 - Math.pow(rho / s, K - s + 1)) / (1 - (rho / s)));
-      P0 = 1 / P0;
-
-      // Probabilidad de rechazo o bloqueo (P_k), cuando el sistema tiene K clientes
-      const Pk = (Math.pow(rho, K) / (factorial(s) * Math.pow(s, K - s))) * P0;
-
-      // Tasa de llegada efectiva
-      const lambdaEfectiva = lambda * (1 - Pk);
-
-      // Número promedio de clientes en el sistema (L)
-      let L = 0;
-      for (let n = 0; n <= K; n++) {
-        if (n < s) {
-          L += n * (Math.pow(rho, n) / factorial(n)) * P0;
-        } else {
-          L += n * (Math.pow(rho, n) / (factorial(s) * Math.pow(s, n - s))) * P0;
-        }
-      }
-
-      // Tiempo promedio en el sistema (W)
-      const W = L / lambdaEfectiva;
+    if (mu > lambda) {
+      const rho = lambda / mu; // Utilización del sistema
+      const Lq = (Math.pow(lambda, 2) * (Math.pow(Cs, 2) + 1)) / (2 * mu * (mu - lambda)); // Número promedio de clientes en la cola
+      const L = Lq + rho; // Número promedio de clientes en el sistema
+      const W = L / lambda; // Tiempo promedio en el sistema
+      const Wq = Lq / lambda; // Tiempo promedio en la cola
 
       setResultados({
-        P0,
-        Pk,
+        rho,
         L,
+        Lq,
         W,
-        lambdaEfectiva,
+        Wq,
       });
     } else {
-      setResultados("Error: Verifique que todos los valores ingresados sean mayores que 0 y que K sea mayor o igual a s.");
+      setResultados("Error: La tasa de servicio debe ser mayor que la tasa de llegada.");
     }
   };
 
@@ -97,22 +71,12 @@ export function M_M_S_K() {
         </Etiqueta>
 
         <Etiqueta>
-          Número de Servidores (s)
+          Coeficiente de Variación del Tiempo de Servicio 
           <Input
             type="text"
-            value={numServidores}
-            onChange={handleInputChange(setNumServidores)}
-            onBlur={handleInputBlur(setNumServidores)}
-          />
-        </Etiqueta>
-
-        <Etiqueta>
-          Capacidad del Sistema (K)
-          <Input
-            type="text"
-            value={capacidadSistema}
-            onChange={handleInputChange(setCapacidadSistema)}
-            onBlur={handleInputBlur(setCapacidadSistema)}
+            value={coefVarServicio}
+            onChange={handleInputChange(setCoefVarServicio)}
+            onBlur={handleInputBlur(setCoefVarServicio)}
           />
         </Etiqueta>
 
@@ -135,11 +99,11 @@ export function M_M_S_K() {
           ) : (
             <Resultados>
               <h2>Resultados</h2>
-              <p>Probabilidad de que el sistema esté vacío (P0): <strong>{resultados.P0.toFixed(2)}</strong></p>
-              <p>Probabilidad de rechazo o bloqueo (Pk): <strong>{resultados.Pk.toFixed(2)}</strong></p>
-              <p>Tasa de llegada efectiva (λ efectiva): <strong>{resultados.lambdaEfectiva.toFixed(2)}</strong></p>
+              <p>Utilización del sistema (ρ): <strong>{resultados.rho.toFixed(2)}</strong></p>
               <p>Número promedio de clientes en el sistema (L): <strong>{resultados.L.toFixed(2)}</strong></p>
+              <p>Número promedio de clientes en la cola (Lq): <strong>{resultados.Lq.toFixed(2)}</strong></p>
               <p>Tiempo promedio en el sistema (W): <strong>{resultados.W.toFixed(2)} {unidadTiempo}</strong></p>
+              <p>Tiempo promedio en la cola (Wq): <strong>{resultados.Wq.toFixed(2)} {unidadTiempo}</strong></p>
             </Resultados>
           )
         ) : <Cargando />}

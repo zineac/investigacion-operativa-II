@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Cargando from '../components/Cargando';
+import Cargando from '../../components/Cargando';
 
-export function CriterioHurwicz() {
+export function CriterioSavage() {
   const [numDecisiones, setNumDecisiones] = useState(3);
   const [numEstados, setNumEstados] = useState(3);
   const [decisiones, setDecisiones] = useState(['Tecnología 1', 'Tecnología 2', 'Tecnología 3']);
@@ -12,11 +12,10 @@ export function CriterioHurwicz() {
     [1000, 650, 400],
     [500, 800, 950]
   ]);
-  const [hurwicz, setHurwicz] = useState(0.65);  // Coeficiente de optimismo
-  const [valoresHurwicz, setValoresHurwicz] = useState([]);
+  const [valoresSavage, setValoresSavage] = useState([]);
   const [mejorResultado, setMejorResultado] = useState(null);
-  const [mejorFila, setMejorFila] = useState(-1);
   const [resaltados, setResaltados] = useState(false);
+  const [mejorFilasPorColumna, setMejorFilasPorColumna] = useState([]);
 
   const manejarCambioNumDecisiones = (e) => {
     const valor = parseInt(e.target.value);
@@ -50,19 +49,29 @@ export function CriterioHurwicz() {
     setResultados(nuevosResultados);
   };
 
-  const calcularCriterioHurwicz = () => {
-    const nuevosValoresHurwicz = resultados.map(fila => {
-      const max = Math.max(...fila);
-      const min = Math.min(...fila);
-      return hurwicz * max + (1 - hurwicz) * min;
-    });
-
-    setValoresHurwicz(nuevosValoresHurwicz);
-    const mejor = Math.max(...nuevosValoresHurwicz);
-    const filaMejor = nuevosValoresHurwicz.indexOf(mejor);
+  const calcularCriterioSavage = () => {
+    // Obtener las pérdidas
+    const maximosPorEstado = Array(numEstados).fill(0).map((_, colIndex) => Math.max(...resultados.map(row => row[colIndex])));
     
+    const perdidas = resultados.map(fila => 
+      fila.map((valor, colIndex) => maximosPorEstado[colIndex] - valor)
+    );
+
+    // Calcular el valor de Savage para cada decisión
+    const nuevosValoresSavage = perdidas.map(fila => Math.max(...fila));
+    
+    setValoresSavage(nuevosValoresSavage);
+    const mejor = Math.min(...nuevosValoresSavage); // Minimizar la pérdida máxima
     setMejorResultado(mejor);
-    setMejorFila(filaMejor);
+    
+    // Obtener las mejores filas para cada columna
+    const filasMejorPorColumna = [];
+    for (let colIndex = 0; colIndex < numEstados; colIndex++) {
+      const mejorValorColumna = Math.min(...perdidas.map(fila => fila[colIndex]));
+      const filaMejorColumna = perdidas.findIndex(fila => fila[colIndex] === mejorValorColumna);
+      filasMejorPorColumna.push(filaMejorColumna);
+    }
+    setMejorFilasPorColumna(filasMejorPorColumna);
     setResaltados(true);
   };
 
@@ -78,18 +87,6 @@ export function CriterioHurwicz() {
         <Etiqueta>
           Número de Estados
           <Input type="number" value={numEstados} onChange={manejarCambioNumEstados} min={1} />
-        </Etiqueta>
-
-        <Etiqueta>
-          Coeficiente de Hurwicz (α)
-          <Input 
-            type="number" 
-            value={hurwicz} 
-            onChange={(e) => setHurwicz(parseFloat(e.target.value))} 
-            step="0.1" 
-            min="0" 
-            max="1" 
-          />
         </Etiqueta>
 
         <Tabla>
@@ -127,7 +124,7 @@ export function CriterioHurwicz() {
                       onChange={(e) => manejarCambioResultado(index, colIndex, e.target.value)}
                       required
                       style={{
-                        backgroundColor: (resaltados && (index === mejorFila)) ? '#ffcccc' : 'transparent',
+                        backgroundColor: (resaltados && (index === mejorFilasPorColumna[colIndex])) ? '#ffcccc' : 'transparent',
                       }}
                     />
                   </td>
@@ -137,7 +134,7 @@ export function CriterioHurwicz() {
           </tbody>
         </Tabla>
 
-        <Boton onClick={calcularCriterioHurwicz}>Calcular</Boton>
+        <Boton onClick={calcularCriterioSavage}>Calcular</Boton>
       </FormularioContainer>
 
       <ResultadosContainer>
@@ -145,12 +142,12 @@ export function CriterioHurwicz() {
           <>
             <Resultados>
               <h3>Resultados</h3>
-              <p>La mejor alternativa es <strong>{decisiones[mejorFila]}</strong> con un valor de Hurwicz de <strong>{mejorResultado.toFixed(2)}</strong>.</p>
+              <p>La mejor alternativa tiene una pérdida máxima de <strong>{mejorResultado.toFixed(2)}</strong>.</p>
             </Resultados>
 
             <Resultados>
-              <h3>Valores de Hurwicz</h3>
-              {valoresHurwicz.map((valor, index) => (
+              <h3>Valores de Savage</h3>
+              {valoresSavage.map((valor, index) => (
                 <p key={index}><strong>A{[index + 1]}</strong>: {valor.toFixed(2)}</p>
               ))}
             </Resultados>

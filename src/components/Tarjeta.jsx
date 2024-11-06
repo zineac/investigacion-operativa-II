@@ -13,7 +13,7 @@ const Tarjeta = ({ titulo, valor, simbolo = "" }) => {
   );
 };
 
-const TarjetaContainer = styled.div`}
+const TarjetaContainer = styled.div`
   font-family: 'Roboto', sans-serif;
   background-color: #495057;
   padding: 15px;
