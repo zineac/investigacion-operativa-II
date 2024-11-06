@@ -1,8 +1,8 @@
-import React, { useState } from "react";
 import { BrowserRouter } from "react-router-dom";
-import { MyRoutes } from "./routers/routes";
-import Sidebar from "./components/Sidebar";
+import { useState } from "react";
 import styled from "styled-components";
+import MyRoutes from "./routers/routes";
+import Sidebar from "./components/Sidebar";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -22,8 +22,9 @@ const MainContainer = styled.div`
   grid-template-columns: 90px auto;
   background: #1c1c1c;
   height: 100vh;
-  transition: all 0.4s;
-  color: #f1f1f1;
+
+  transition: all 0.4s ease;
+  color: #e5e5e5;
 
   &.active {
     grid-template-columns: 280px auto;

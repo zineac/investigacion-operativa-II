@@ -1,14 +1,15 @@
 import { NavLink } from "react-router-dom";
+import {
+  AiOutlineDeploymentUnit ,
+  AiTwotoneBank,
+  AiOutlineLeft,
+  AiOutlineBranches, 
+  AiOutlineDotChart, 
+  AiOutlineLineChart,
+  AiOutlineNodeIndex
+} from "react-icons/ai";
 import styled from "styled-components";
 import logo from "../assets/react.svg";
-import {
-  AiOutlineDeploymentUnit,
-  AiOutlineLeft,
-  AiOutlineHome,
-  AiOutlineBranches,
-  AiOutlineDotChart,
-  AiOutlineLineChart,
-} from "react-icons/ai";
 
 function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const ModSidebaropen = () => {
@@ -21,15 +22,13 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
         <AiOutlineLeft />
       </button>
       <div className="Logocontent">
-        <div className="imgcontent">
-          <img src={logo} />
-        </div>
+        <img src={logo} />
         <h2>METODOS</h2>
       </div>
       {linksArray.map(({ label, icon, to }) => (
         <div className="LinkContainer" key={label}>
           <NavLink to={to} className={({ isActive }) => `Links ${isActive ? `active` : ``}`}>
-            <div className="Linkicon">{icon}</div>
+            <div className="icon">{icon}</div>
             {sidebarOpen && <span>{label}</span>}
           </NavLink>
         </div>
@@ -43,7 +42,7 @@ export default Sidebar;
 const linksArray = [
   {
     label: "Inicio",
-    icon: <AiOutlineHome />,
+    icon: <AiTwotoneBank />,
     to: "/",
   },
   {
@@ -62,36 +61,42 @@ const linksArray = [
     to: "/EOQ",
   },
   {
-    label: "Decisiones",
+    label: "Teoría de decisiones",
     icon: <AiOutlineDotChart />,
     to: "/Decisiones",
   },
   {
-    label: "Teoria de Colas", // Nuevo enlace para Tcolas
-    icon: <AiOutlineDotChart />,
+    label: "Teoría de colas", // Nuevo enlace para Tcolas
+    icon: <AiOutlineNodeIndex />,
     to: "/Tcolas",
   },
 ];
 
 const SidebarContainer = styled.div`
   min-height: 100%;
-  color: #f1f1f1;
-  background: #111;
-  position: sticky;
-  padding-top: 20px;
+  background: #181818;
+  color: #e5e5e5;
+
+  position: relative;
 
   .Sidebarbutton {
     position: absolute;
-    top: 20px;
-    right: -18px;
+    top: 42px;
+    right: -16px;
+
     width: 32px;
     height: 32px;
-    border-radius: 50%;
-    background: #222;
-    box-shadow: 0 0 4px #444, 0 0 7px #111;
+
+    border-radius: 99px;
+    background: #252525;
+
+    box-shadow: 0 0 10px 2px #252525;
+    
+    /* Centrar el icono */
     display: flex;
     align-items: center;
     justify-content: center;
+
     cursor: pointer;
     transition: transform 0.3s;
     transform: ${({ isOpen }) => (isOpen ? `initial` : `rotate(180deg)`)};
@@ -107,62 +112,52 @@ const SidebarContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 20px;
+    padding: 40px 0 20px 0;
 
-    .imgcontent {
-      img {
-        max-width: 100%;
-        height: auto;
-        transition: transform 0.5s;
-        transform: ${({ isOpen }) => (isOpen ? `scale(1.2)` : `scale(1.4)`)};
-      }
+    img {
+      transition: transform 0.4s linear ease-in;
+      transform: ${({ isOpen }) => (isOpen ? `scale(1.2)` : `scale(1.4)`)};
     }
 
     h2 {
       display: ${({ isOpen }) => (isOpen ? `block` : `none`)};
-      margin-left: 20px;
+      margin-left: 14px;
     }
   }
 
   .LinkContainer {
-    margin: 8px 0;
-    padding: 0 15%;
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+
     &:hover {
-      background: #222;
+      background: #252525;
     }
 
     .Links {
       display: flex;
       align-items: center;
-      padding: 8px 0;
-      color: inherit;
-      text-decoration: none;
-      height: 50px;
 
-      .Linkicon {
-        padding: 8px 16px;
+      padding: 15px 0;
+      color: #e5e5e5;
+      
+      text-decoration: none;
+      width: ${({ isOpen }) => (isOpen ? `160px` : `auto`)};
+
+      .icon {
         svg {
-          font-size: 25px;
+          font-size: 28px;
         }
       }
 
-      &.active .Linkicon svg {
-        color: #7b61ff;
+      span {
+        margin-left: 14px;
+        display: ${({ isOpen }) => (isOpen ? `block` : `none`)};
       }
-    }
-  }
 
-  .Themecontent {
-    display: flex;
-    justify-content: space-between;
-
-    .titletheme {
-      padding: 10px;
-      font-weight: 700;
-      opacity: ${({ isOpen }) => (isOpen ? `1` : `0`)};
-      transition: opacity 0.3s;
-      white-space: nowrap;
-      overflow: hidden;
+      &.active {
+        color: #00D8FF;
+      }
     }
   }
 `;

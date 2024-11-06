@@ -7,7 +7,7 @@ import { Decisiones } from "../pages/Decisiones";
 import { Tcolas } from "../pages/Tcolas"; // Importa Tcolas
 import styled from "styled-components";
 
-export function MyRoutes() {
+function MyRoutes() {
   return (
     <RoutesContainer>
       <Routes>
@@ -22,9 +22,11 @@ export function MyRoutes() {
   );
 }
 
+export default MyRoutes;
+
 // Los estilos aseguran que ocupe como minimo el 100% y crezca si el componente ocupa más
 const RoutesContainer = styled.div`
   min-height: 100%;
   overflow-y: auto;
-  background: #f8f9fa;
+  background: #e5e5e5;
 `;
