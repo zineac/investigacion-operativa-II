@@ -4,16 +4,25 @@ import { PERT } from "../pages/PERT";
 import { CPM } from "../pages/CPM";
 import { EOQ } from "../pages/EOQ";
 import { Decisiones } from "../pages/Decisiones";
+import styled from "styled-components";
 
 export function MyRoutes() {
   return (
+    <RoutesContainer>
       <Routes>
-        <Route path="/Home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/CPM" element={<CPM />} />
         <Route path="/PERT" element={<PERT />} />
         <Route path="/EOQ" element={<EOQ />}/>
         <Route path="/Decisiones" element={<Decisiones />} />
       </Routes>
-    
-  );
+    </RoutesContainer>
+  )
 }
+
+// Los estilos aseguran que ocupe como minimo el 100% y crezca si el componente ocupa más
+const RoutesContainer = styled.div`
+  min-height: 100%;
+  overflow-y: auto;
+  background: #f8f9fa;
+`;

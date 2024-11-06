@@ -3,20 +3,21 @@ import styled, { keyframes } from "styled-components";
 
 const Cargando = () => {
   return (
-    <Contenedor>
+    <LoadingContainer>
       <Loader>
         <LoaderInner />
       </Loader>
-    </Contenedor>
+    </LoadingContainer>
   );
 };
 
-const Contenedor = styled.div`
+/* Centramos el contenedor cuando lo usamos */
+const LoadingContainer = styled.div`
+  height: 100%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  width: 100%;
 `;
 
 const loaderAnimation = keyframes`
@@ -64,20 +65,18 @@ const loaderInnerAnimation = keyframes`
 `;
 
 const Loader = styled.span`
-  display: inline-block;
   width: 30px;
   height: 30px;
-  position: relative;
   border: 4px solid #fff;
   animation: ${loaderAnimation} 2s infinite ease;
 `;
 
 const LoaderInner = styled.span`
-  vertical-align: top;
   display: inline-block;
+  vertical-align: top;
   width: 100%;
   background-color: #fff;
-  animation: ${loaderInnerAnimation} 2s infinite ease-in;
+  animation: ${loaderInnerAnimation} 2s infinite ease;
 `;
 
 export default Cargando;

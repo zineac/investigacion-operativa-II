@@ -1,16 +1,22 @@
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/react.svg";
-import { AiOutlineLeft, AiOutlineHome, AiOutlineApartment } from "react-icons/ai";
-import { MdOutlineAnalytics } from "react-icons/md";
-import { NavLink } from "react-router-dom";
+import {
+  AiOutlineDeploymentUnit ,
+  AiOutlineLeft, 
+  AiOutlineHome, 
+  AiOutlineBranches, 
+  AiOutlineDotChart, 
+  AiOutlineLineChart 
+} from "react-icons/ai";
 
-export function Sidebar({ sidebarOpen, setSidebarOpen }) {
+function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const ModSidebaropen = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
   return (
-    <Container isOpen={sidebarOpen}>
+    <SidebarContainer isOpen={sidebarOpen}>
       <button className="Sidebarbutton" onClick={ModSidebaropen}>
         <AiOutlineLeft />
       </button>
@@ -20,54 +26,53 @@ export function Sidebar({ sidebarOpen, setSidebarOpen }) {
         </div>
         <h2>METODOS</h2>
       </div>
-      {linksArray.map(({ icon, label, to }) => (
+      {linksArray.map(({ label, icon, to }) => (
         <div className="LinkContainer" key={label}>
-          <NavLink
-            to={to}
-            className={({ isActive }) => `Links${isActive ? ` active` : ``}`}
-          >
+          <NavLink to={to} className={({ isActive }) => `Links ${isActive ? `active` : ``}`}>
             <div className="Linkicon">{icon}</div>
             {sidebarOpen && <span>{label}</span>}
           </NavLink>
         </div>
       ))}
-    </Container>
+    </SidebarContainer>
   );
 }
 
+export default Sidebar;
+
 const linksArray = [
   {
-    label: "Home",
+    label: "Inicio",
     icon: <AiOutlineHome />,
-    to: "/home",
+    to: "/",
   },
   {
     label: "CPM",
-    icon: <AiOutlineApartment />,
+    icon: <AiOutlineDeploymentUnit />,
     to: "/CPM",
   },
   {
     label: "PERT",
-    icon: <MdOutlineAnalytics />,
+    icon: <AiOutlineBranches />,
     to: "/PERT",
   },
   {
     label: "EOQ",
-    icon: <MdOutlineAnalytics />,
+    icon: <AiOutlineLineChart />,
     to: "/EOQ",
   },
   {
     label: "Decisiones",
-    icon: <MdOutlineAnalytics />,
+    icon: <AiOutlineDotChart />,
     to: "/Decisiones",
   },
 ];
 
-const Container = styled.div`
+const SidebarContainer = styled.div`
+  min-height: 100%;
   color: #f1f1f1;
   background: #111;
   position: sticky;
-  height: 100vh;
   padding-top: 20px;
 
   .Sidebarbutton {
