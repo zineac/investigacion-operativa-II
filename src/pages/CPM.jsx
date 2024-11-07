@@ -190,9 +190,7 @@ const Resultados = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 40px;
-  min-height: 710px;
-  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+  padding: 30px;
   font-family: 'Roboto', sans-serif;
   color: #495057;
 `;
@@ -203,7 +201,7 @@ const FormularioContainer = styled.div`
   padding: 20px;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0px 10px 2px rgba(0, 0, 0, 0.15);
 `;
 
 const ResultadosContainer = styled.div`
@@ -217,6 +215,7 @@ const ResultadosContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0px 10px 2px rgba(0, 0, 0, 0.15);
 `;
 
 const Etiqueta = styled.label`

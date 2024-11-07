@@ -58,14 +58,14 @@ export function EOQ() {
 }
 
 const ContenedorPrincipal = styled.div`
-  padding: 20px;
+  padding: 10px;
   background: linear-gradient(135deg, #e9ecef, #dee2e6);
   font-family: 'Roboto', sans-serif;
   color: #495057;
 `;
 
 const BarraWrapper = styled.div`
-  margin: 0 20px;
+  margin: 20px 0  0 20px;
   display: flex;
   justify-content: space-between;
   background-color: #fff;

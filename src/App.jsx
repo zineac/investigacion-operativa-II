@@ -20,7 +20,6 @@ function App() {
 const MainContainer = styled.div`
   display: grid;
   grid-template-columns: 90px auto;
-  background: #1c1c1c;
   height: 100vh;
 
   transition: all 0.4s ease;

@@ -298,7 +298,7 @@ const Tarjeta = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 40px;
+  padding: 30px;
   min-height: 710px;
   background: linear-gradient(135deg, #e9ecef, #dee2e6);
   font-family: 'Roboto', sans-serif;

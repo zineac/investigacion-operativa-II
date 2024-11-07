@@ -47,28 +47,36 @@ export function Tcolas() {
 
 // Estilos básicos para los elementos
 const ContenedorPrincipal = styled.div`
-  padding: 20px;
-  background: #f8f9fa;
+  padding: 10px;
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+  font-family: 'Roboto', sans-serif;
+  color: #495057;
 `;
 
 const BarraWrapper = styled.div`
+  margin: 20px 0  0 20px;
   display: flex;
-  gap: 10px;
+  justify-content: space-evenly;
+  background-color: #fff;
+  padding: 10px 20px;
   margin-bottom: 20px;
+  border-radius: 8px;
 `;
 
 const BotonCriterio = styled.button`
   padding: 10px;
-  background-color: ${({ seleccionado }) => (seleccionado ? "#007bff" : "#ccc")};
-  color: #fff;
   border: none;
+  border-radius: 8px;
+  background-color: ${({ seleccionado }) => (seleccionado ? "#007bff" : "transparent")};
+  color: ${({ seleccionado }) => (seleccionado ? "white" : "black")};
   cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+
   &:hover {
-    background-color: #0056b3;
+    background-color: #ddd;
   }
 `;
 
 const ContenidoWrapper = styled.div`
-  padding: 20px;
-  background-color: #e9ecef;
+  height: 100%;
 `;

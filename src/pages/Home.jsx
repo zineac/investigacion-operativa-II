@@ -38,13 +38,10 @@ export function Home() {
 }
 
 const MainContainer = styled.main`
-  padding: 40px;
-  font-family: 'Roboto', sans-serif;
-  color: #5b5b5b;
+  padding: 30px;
 
   h2 {
     font-size: 1.8rem;
-    color: #5b5b5b;
     margin-bottom: 15px;
     border-bottom: 2px solid #007bff;
     padding-bottom: 5px;
@@ -61,7 +58,6 @@ const MainContainer = styled.main`
   ul {
     padding-left: 40px;
     font-size: 1.2rem;
-    color: #343a40;
   }
 
   li {
@@ -70,7 +66,6 @@ const MainContainer = styled.main`
 
   p {
     font-size: 1.1rem;
-    color: #495057;
     line-height: 1.7;
   }
 
