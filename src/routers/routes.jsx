@@ -4,7 +4,10 @@ import { PERT } from "../pages/PERT";
 import { CPM } from "../pages/CPM";
 import { EOQ } from "../pages/EOQ";
 import { Decisiones } from "../pages/Decisiones";
-import { Tcolas } from "../pages/Tcolas"; // Importa Tcolas
+import { Tcolas } from "../pages/Tcolas"; 
+import { Asignacion } from "../pages/Asignacion"; 
+import { Optimizacion } from "../pages/Optimizacion"; 
+import { Pdinamica } from "../pages/Pdinamica"; 
 import styled from "styled-components";
 
 function MyRoutes() {
@@ -17,6 +20,9 @@ function MyRoutes() {
         <Route path="/EOQ" element={<EOQ />} />
         <Route path="/Decisiones" element={<Decisiones />} />
         <Route path="/Tcolas" element={<Tcolas />} /> 
+        <Route path="/Asignacion" element={<Asignacion />} /> 
+        <Route path="/Optimizacion" element={<Optimizacion />} /> 
+        <Route path="/Pdinamica" element={<Pdinamica />} /> 
       </Routes>
     </RoutesContainer>
   );

@@ -70,6 +70,21 @@ const linksArray = [
     icon: <AiOutlineNodeIndex />,
     to: "/Tcolas",
   },
+  {
+    label: "Asignacion de recursos", // Nuevo enlace para Tcolas
+    icon: <AiOutlineNodeIndex />,
+    to: "/Asignacion",
+  },
+  {
+    label: "Optimizacion", // Nuevo enlace para Tcolas
+    icon: <AiOutlineNodeIndex />,
+    to: "/Optimizacion",
+  },
+  {
+    label: "Programacion dinamica", // Nuevo enlace para Tcolas
+    icon: <AiOutlineNodeIndex />,
+    to: "/Pdinamica",
+  },
 ];
 
 const SidebarContainer = styled.div`
