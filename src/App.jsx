@@ -19,14 +19,14 @@ function App() {
 
 const MainContainer = styled.div`
   display: grid;
-  grid-template-columns: 90px auto;
+  grid-template-columns: 100px auto;
   height: 100vh;
 
   transition: all 0.4s ease;
   color: #e5e5e5;
 
   &.active {
-    grid-template-columns: 280px auto;
+    grid-template-columns: 300px auto;
   }
 `;
 

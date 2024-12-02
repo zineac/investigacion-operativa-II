@@ -89,15 +89,21 @@ const linksArray = [
 
 const SidebarContainer = styled.div`
   min-height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
   background: #181818;
   color: #e5e5e5;
+
+  ::-webkit-scrollbar {
+    width: 0;
+    display: none; 
+  }
 
   position: relative;
 
   .Sidebarbutton {
     position: absolute;
     top: 42px;
-    right: -16px;
 
     width: 32px;
     height: 32px;
@@ -115,10 +121,11 @@ const SidebarContainer = styled.div`
     cursor: pointer;
     transition: transform 0.3s;
     transform: ${({ isOpen }) => (isOpen ? `initial` : `rotate(180deg)`)};
+    right: ${({ isOpen }) => (isOpen ? `16px` : `32px`)};
     border: none;
 
     svg {
-      color: #fff;
+      color: ${({ isOpen }) => (isOpen ? `#fff` : `#00D8FF`)};
       font-size: 18px;
     }
   }
@@ -131,7 +138,7 @@ const SidebarContainer = styled.div`
 
     img {
       transition: transform 0.4s linear ease-in;
-      transform: ${({ isOpen }) => (isOpen ? `scale(1.2)` : `scale(1.4)`)};
+      transform: ${({ isOpen }) => (isOpen ? `scale(1.2)` : `scale(0)`)};
     }
 
     h2 {
