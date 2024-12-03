@@ -74,13 +74,13 @@ const linksArray = [
     icon: <AiOutlineBulb />,
     to: "/Tcolas",
   },
+  //{
+   // label: "Asignacion de recursos", // Nuevo enlace para Tcolas
+   // icon: <AiOutlineCodeSandbox />,
+   // to: "/Asignacion",
+  //},
   {
-    label: "Asignacion de recursos", // Nuevo enlace para Tcolas
-    icon: <AiOutlineCodeSandbox />,
-    to: "/Asignacion",
-  },
-  {
-    label: "Optimizacion", // Nuevo enlace para Tcolas
+    label: "Programacion no lineal", // Nuevo enlace para Tcolas
     icon: <AiOutlineEuro />,
     to: "/Optimizacion",
   },

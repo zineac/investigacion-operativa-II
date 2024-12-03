@@ -1,266 +1,96 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import  {ModeloInversion}  from "../methods/extrasPdinamica/ModeloInversion";
+import { DistribucionCientificos }  from "../methods/extrasPdinamica/DistribucionCientificos";
+import { DistribucionBrigadas } from "../methods/extrasPdinamica/DistribucionBrigadas";
+import  {ModeloReemplazoEquipo} from "../methods/extrasPdinamica/ModeloReemplazoEquipo";
+import  {WyndorGlass}  from "../methods/extrasPdinamica/WyndorGlass";
+import  ProgramacionDinamica  from "../methods/extrasPdinamica/ProgramacionDinamica";
+import  {NivelEmpleados} from "../methods/extrasPdinamica/NivelEmpleados";
+import  {HolgurasRechazos}  from "../methods/extrasPdinamica/HolgurasRechazos";
+import  {ModeloFuerzaTrabajo}  from "../methods/extrasPdinamica/ModeloFuerzaTrabajo";
+import  {ModeloMochila}  from "../methods/extrasPdinamica/ModeloMochila";
 
-// Funciones para calcular rutas
-function calcularRutaMasCorta(numNodos, grafo, metodo) {
-  try {
-    switch (metodo) {
-      case "Dijkstra":
-        return calcularConDijkstra(numNodos, grafo);
-      case "Floyd-Warshall":
-        return calcularConFloydWarshall(numNodos, grafo);
-      case "Bellman-Ford":
-        return calcularConBellmanFord(numNodos, grafo);
-      default:
-        throw new Error("Método desconocido");
-    }
-  } catch (error) {
-    console.error("Error al calcular la ruta más corta:", error);
-    return { distancias: [], rutas: [] };
-  }
-}
-
-// Funciones para cada método (aquí solo dejo Floyd-Warshall como ejemplo)
-function calcularConFloydWarshall(numNodos, grafo) {
-  const distancias = Array.from({ length: numNodos }, () =>
-    Array(numNodos).fill(Infinity)
-  );
-  const rutas = Array.from({ length: numNodos }, () =>
-    Array(numNodos).fill(null)
-  );
-
-  for (let i = 0; i < numNodos; i++) {
-    distancias[i][i] = 0;
-  }
-
-  for (let i = 0; i < numNodos; i++) {
-    for (let j = 0; j < numNodos; j++) {
-      if (grafo[i][j] !== 0) {
-        distancias[i][j] = grafo[i][j];
-        rutas[i][j] = i;
-      }
-    }
-  }
-
-  for (let k = 0; k < numNodos; k++) {
-    for (let i = 0; i < numNodos; i++) {
-      for (let j = 0; j < numNodos; j++) {
-        if (distancias[i][j] > distancias[i][k] + distancias[k][j]) {
-          distancias[i][j] = distancias[i][k] + distancias[k][j];
-          rutas[i][j] = rutas[k][j];
-        }
-      }
-    }
-  }
-
-  return { distancias, rutas };
-}
+const modelos = [
+  { id: 1, nombre: "Modelo de Inversión" },
+  { id: 2, nombre: "Distribución de Científicos entre Grupos de Investigación" },
+  { id: 3, nombre: "Distribución de Brigadas Médicas entre Países" },
+  { id: 4, nombre: "Modelo de Reemplazo de Equipo" },
+  { id: 5, nombre: "Problema de la Wyndor Glass Company" },
+  //{ id: 6, nombre: "Programación Dinámica Probabilística Ganadora en Las Vegas" },
+  { id: 7, nombre: "Programación del Nivel de Empleados" },
+  //{ id: 8, nombre: "Determinación de Holguras por Rechazos" },
+  { id: 9, nombre: "Modelo de Tamaño de la Fuerza de Trabajo" },
+  { id: 10, nombre: "Modelo de la Mochila/Equipo de Vuelo/Carga de Contenedor" },
+];
 
 export function Pdinamica() {
-  const [numNodos, setNumNodos] = useState(4);
-  const [grafo, setGrafo] = useState([
-    [0, 3, Infinity, Infinity],
-    [3, 0, 1, 6],
-    [Infinity, 1, 0, 2],
-    [Infinity, 6, 2, 0],
-  ]);
-  const [metodo, setMetodo] = useState("Floyd-Warshall");
-  const [distancias, setDistancias] = useState([]);
-  const [rutas, setRutas] = useState([]);
-  const [error, setError] = useState("");
+  const [modeloSeleccionado, setModeloSeleccionado] = useState(1);
 
-  const manejarCambioNumNodos = (e) => {
-    const nuevosNumNodos = parseInt(e.target.value);
-    setNumNodos(nuevosNumNodos);
-    setGrafo(
-      Array.from({ length: nuevosNumNodos }, (_, i) =>
-        Array.from({ length: nuevosNumNodos }, (_, j) => (i === j ? 0 : Infinity))
-      )
-    );
-  };
-
-  const manejarCambioGrafo = (i, j, valor) => {
-    const nuevoGrafo = [...grafo];
-    nuevoGrafo[i][j] = parseInt(valor);
-    setGrafo(nuevoGrafo);
-  };
-
-  const manejarCambioMetodo = (e) => {
-    setMetodo(e.target.value);
-  };
-
-  const resolverRutaMasCorta = () => {
-    try {
-      const { distancias, rutas } = calcularRutaMasCorta(numNodos, grafo, metodo);
-      setDistancias(distancias);
-      setRutas(rutas);
-      setError("");
-    } catch (error) {
-      setError("Hubo un error al calcular la ruta más corta.");
-      console.error(error);
-    }
-  };
-
-  const reconstruirRuta = (origen, destino) => {
-    let ruta = [];
-    let actual = origen;
-    while (actual !== destino) {
-      ruta.push(actual);
-      actual = rutas[actual][destino];
-    }
-    ruta.push(destino);
-    return ruta;
+  const manejarCambioModelo = (id) => {
+    setModeloSeleccionado(id);
   };
 
   return (
-    <Contenedor>
-      <FormularioContainer>
-        <h2>Parámetros de Entrada</h2>
-        <Etiqueta>
-          Número de Nodos
-          <Input
-            type="number"
-            value={numNodos}
-            onChange={manejarCambioNumNodos}
-            min={1}
-            required
-          />
-        </Etiqueta>
-
-        <Etiqueta>
-          Método de Resolución
-          <Select value={metodo} onChange={manejarCambioMetodo}>
-            <option value="Dijkstra">Dijkstra</option>
-            <option value="Floyd-Warshall">Floyd-Warshall</option>
-            <option value="Bellman-Ford">Bellman-Ford</option>
-          </Select>
-        </Etiqueta>
-
-        <form onSubmit={(e) => e.preventDefault()}>
-          <Tabla>
-            <thead>
-              <tr>
-                <th></th>
-                {Array.from({ length: numNodos }, (_, i) => (
-                  <th key={i}>{String.fromCharCode(65 + i)}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {grafo.map((fila, i) => (
-                <tr key={i}>
-                  <td>{String.fromCharCode(65 + i)}</td>
-                  {fila.map((valor, j) => (
-                    <td key={j}>
-                      <InputTabla
-                        type="number"
-                        value={valor === Infinity ? "" : valor}
-                        onChange={(e) =>
-                          manejarCambioGrafo(i, j, e.target.value)
-                        }
-                        placeholder={valor === Infinity ? "∞" : ""}
-                      />
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </Tabla>
-          <Boton type="button" onClick={resolverRutaMasCorta}>
-            Calcular Ruta Más Corta
-          </Boton>
-        </form>
-      </FormularioContainer>
-
-      <ResultadosContainer>
-        {error && (
-          <ResultadoWrapper style={{ color: "red" }}>
-            <h3>Error</h3>
-            <p>{error}</p>
-          </ResultadoWrapper>
-        )}
-
-        {distancias.length > 0 && !error && (
-          <Resultados>
-            <h3>Resultados</h3>
-            <h4>Distancias Más Cortas</h4>
-            <TablaResultados>
-              <thead>
-                <tr>
-                  <th></th>
-                  {Array.from({ length: numNodos }, (_, i) => (
-                    <th key={i}>{String.fromCharCode(65 + i)}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {distancias.map((fila, i) => (
-                  <tr key={i}>
-                    <td>{String.fromCharCode(65 + i)}</td>
-                    {fila.map((dist, j) => (
-                      <td key={j}>{dist === Infinity ? "∞" : dist}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </TablaResultados>
-            <h4>Rutas</h4>
-            <TablaResultados>
-              <thead>
-                <tr>
-                  <th>De</th>
-                  <th>A</th>
-                  <th>Ruta</th>
-                </tr>
-              </thead>
-              <tbody>
-                {distancias.map((fila, i) => (
-                  <tr key={i}>
-                    {fila.map((_, j) => (
-                      <td key={j}>
-                        {i === j
-                          ? "-"
-                          : `${String.fromCharCode(65 + i)} → ${String.fromCharCode(
-                              65 + j
-                            )}`}
-                      </td>
-                    ))}
-                    <td>{reconstruirRuta(i, j).map((nodo) => String.fromCharCode(65 + nodo)).join(" → ")}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </TablaResultados>
-          </Resultados>
-        )}
-      </ResultadosContainer>
-    </Contenedor>
+    <ContenedorPrincipal>
+      <BarraWrapper>
+        {modelos.map((modelo) => (
+          <BotonModelo
+            key={modelo.id}
+            onClick={() => manejarCambioModelo(modelo.id)}
+            seleccionado={modeloSeleccionado === modelo.id}
+          >
+            {modelo.nombre}
+          </BotonModelo>
+        ))}
+      </BarraWrapper>
+      <ContenidoWrapper>
+        {modeloSeleccionado === 1 && <ModeloInversion />}
+        {modeloSeleccionado === 2 && <DistribucionCientificos />}
+        {modeloSeleccionado === 3 && <DistribucionBrigadas />}
+        {modeloSeleccionado === 4 && <ModeloReemplazoEquipo />}
+        {modeloSeleccionado === 5 && <WyndorGlass />}
+        {modeloSeleccionado === 6 && <ProgramacionDinamica />}
+        {modeloSeleccionado === 7 && <NivelEmpleados />}
+        {modeloSeleccionado === 8 && <HolgurasRechazos />}
+        {modeloSeleccionado === 9 && <ModeloFuerzaTrabajo />}
+        {modeloSeleccionado === 10 && <ModeloMochila />}
+      </ContenidoWrapper>
+    </ContenedorPrincipal>
   );
 }
 
-const Contenedor = styled.div`
-  display: flex;
-  padding: 30px;
-  font-family: "Roboto", sans-serif;
+const ContenedorPrincipal = styled.div`
+  padding: 10px;
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+  font-family: 'Roboto', sans-serif;
   color: #495057;
 `;
 
-const FormularioContainer = styled.div`
-  flex: 1;
-  margin-right: 20px;
-  padding: 20px;
+const BarraWrapper = styled.div`
+  margin: 20px 0 0 20px;
+  display: flex;
+  justify-content: space-between;
   background-color: #fff;
+  padding: 10px 20px;
+  margin-bottom: 20px;
   border-radius: 8px;
-  box-shadow: 0 0px 10px 2px rgba(0, 0, 0, 0.15);
 `;
 
-const ResultadosContainer = styled.div`
-  flex: 1;
-  padding: 20px;
-  background-color: #343a40;
+const BotonModelo = styled.button`
+  padding: 10px;
+  border: none;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  background-color: ${({ seleccionado }) => (seleccionado ? "#007bff" : "transparent")};
+  color: ${({ seleccionado }) => (seleccionado ? "white" : "black")};
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background-color: #ddd;
+  }
+`;
+
+const ContenidoWrapper = styled.div`
+  height: 100%;
 `;
