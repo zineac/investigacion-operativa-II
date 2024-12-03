@@ -6,8 +6,6 @@ import {
   AiOutlineBranches, 
   AiOutlineDotChart, 
   AiOutlineLineChart,
-  AiOutlineNodeIndex,
-  AiOutlineBulb,
   AiOutlineCodeSandbox,
   AiOutlineEuro,
   AiOutlineShareAlt
@@ -22,12 +20,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   return (
     <SidebarContainer isOpen={sidebarOpen}>
-      <button className="Sidebarbutton" onClick={ModSidebaropen}>
-        <AiOutlineLeft />
-      </button>
       <div className="Logocontent">
         <img src={logo} />
         <h2>METODOS</h2>
+        <button className="Sidebarbutton" onClick={ModSidebaropen}>
+          <AiOutlineLeft />
+        </button>
       </div>
       {linksArray.map(({ label, icon, to }) => (
         <div className="LinkContainer" key={label}>
@@ -71,7 +69,7 @@ const linksArray = [
   },
   {
     label: "Teoría de colas", // Nuevo enlace para Tcolas
-    icon: <AiOutlineBulb />,
+    icon: <AiOutlineCodeSandbox />,
     to: "/Tcolas",
   },
   //{
@@ -103,19 +101,34 @@ const SidebarContainer = styled.div`
     display: none; 
   }
 
-  position: relative;
+  .Logocontent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 0 1.25rem 0;
+
+    img {
+      width: 3rem;
+      height: 3rem;
+      display: ${({ isOpen }) => (isOpen ? `block` : `none`)};
+    }
+
+    h2 {
+      display: ${({ isOpen }) => (isOpen ? `block` : `none`)};
+      margin-left: 1.2rem;
+      font-size: 1.5rem;
+    }
+  }
 
   .Sidebarbutton {
-    position: absolute;
-    top: 42px;
+    width: 1.7rem;
+    height: 1.7rem;
+    margin-left: ${({ isOpen }) => (isOpen ? `0.6rem` : `0`)};
 
-    width: 32px;
-    height: 32px;
+    border-radius: 50%;
+    background: #303030;
 
-    border-radius: 99px;
-    background: #252525;
-
-    box-shadow: 0 0 10px 2px #252525;
+    box-shadow: 0 0 0.625rem 0.125rem #252525;
     
     /* Centrar el icono */
     display: flex;
@@ -123,36 +136,18 @@ const SidebarContainer = styled.div`
     justify-content: center;
 
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: transform 0.3s linear;
     transform: ${({ isOpen }) => (isOpen ? `initial` : `rotate(180deg)`)};
-    right: ${({ isOpen }) => (isOpen ? `16px` : `32px`)};
     border: none;
 
     svg {
       color: ${({ isOpen }) => (isOpen ? `#fff` : `#00D8FF`)};
-      font-size: 18px;
-    }
-  }
-
-  .Logocontent {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 0 20px 0;
-
-    img {
-      transition: transform 0.4s linear ease-in;
-      transform: ${({ isOpen }) => (isOpen ? `scale(1.2)` : `scale(0)`)};
-    }
-
-    h2 {
-      display: ${({ isOpen }) => (isOpen ? `block` : `none`)};
-      margin-left: 14px;
+      font-size: 1.125rem;
     }
   }
 
   .LinkContainer {
-    margin: 10px 0;
+    margin: 0.625rem 0;
     display: flex;
     justify-content: center;
 
@@ -164,20 +159,21 @@ const SidebarContainer = styled.div`
       display: flex;
       align-items: center;
 
-      padding: 15px 0;
+      padding: 0.9375rem 0;
       color: #e5e5e5;
       
       text-decoration: none;
-      width: ${({ isOpen }) => (isOpen ? `160px` : `auto`)};
+      width: ${({ isOpen }) => (isOpen ? `10rem` : `auto`)};
 
       .icon {
         svg {
-          font-size: 28px;
+          font-size: 1.75rem;
         }
       }
 
       span {
-        margin-left: 14px;
+        font-size: 1rem;
+        margin-left: 0.875rem;
         display: ${({ isOpen }) => (isOpen ? `block` : `none`)};
       }
 

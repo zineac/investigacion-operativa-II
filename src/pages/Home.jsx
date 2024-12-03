@@ -38,30 +38,30 @@ export function Home() {
 }
 
 const MainContainer = styled.main`
-  padding: 30px;
+  padding: 2rem;
 
   h2 {
     font-size: 1.8rem;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 5px;
+    margin-bottom: 1rem;
+    border-bottom: 0.125rem solid #007bff;
+    padding-bottom: 0.3125rem;
   }
 
   section {
-    margin-bottom: 40px;
-    padding: 25px;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem;
     background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 0px 10px 2px rgba(0, 0, 0, 0.15);
+    border-radius: 0.75rem;
+    box-shadow: 0 0px 0.625rem 0.125rem rgba(0, 0, 0, 0.15);
   }
 
   ul {
-    padding-left: 40px;
+    padding-left: 2.5rem;
     font-size: 1.2rem;
   }
 
   li {
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
   }
 
   p {
@@ -72,5 +72,32 @@ const MainContainer = styled.main`
   strong {
     font-weight: bold;
     color: #007bff;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    section {
+      margin-bottom: 2rem;
+      padding: 1rem;
+    }
+
+    ul {
+      padding-left: 1.5rem;
+      font-size: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
   }
 `;
