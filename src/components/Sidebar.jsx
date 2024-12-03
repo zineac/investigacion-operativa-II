@@ -6,7 +6,11 @@ import {
   AiOutlineBranches, 
   AiOutlineDotChart, 
   AiOutlineLineChart,
-  AiOutlineNodeIndex
+  AiOutlineNodeIndex,
+  AiOutlineBulb,
+  AiOutlineCodeSandbox,
+  AiOutlineEuro,
+  AiOutlineShareAlt
 } from "react-icons/ai";
 import styled from "styled-components";
 import logo from "../assets/react.svg";
@@ -67,22 +71,22 @@ const linksArray = [
   },
   {
     label: "Teoría de colas", // Nuevo enlace para Tcolas
-    icon: <AiOutlineNodeIndex />,
+    icon: <AiOutlineBulb />,
     to: "/Tcolas",
   },
   {
     label: "Asignacion de recursos", // Nuevo enlace para Tcolas
-    icon: <AiOutlineNodeIndex />,
+    icon: <AiOutlineCodeSandbox />,
     to: "/Asignacion",
   },
   {
     label: "Optimizacion", // Nuevo enlace para Tcolas
-    icon: <AiOutlineNodeIndex />,
+    icon: <AiOutlineEuro />,
     to: "/Optimizacion",
   },
   {
     label: "Programacion dinamica", // Nuevo enlace para Tcolas
-    icon: <AiOutlineNodeIndex />,
+    icon: <AiOutlineShareAlt />,
     to: "/Pdinamica",
   },
 ];
