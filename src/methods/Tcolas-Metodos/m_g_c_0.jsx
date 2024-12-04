@@ -1,118 +1,94 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import Cargando from '../../components/Cargando'
+import React, { useState } from "react";
+import styled from "styled-components";
+import Cargando from "../../components/Cargando";
 
 export function M_G_C_0() {
-  const [tasaLlegada, setTasaLlegada] = useState("1"); // λ: tasa de llegada
-  const [tasaServicio, setTasaServicio] = useState("2"); // μ: tasa de servicio
-  const [coefVarServicio, setCoefVarServicio] = useState("1"); // C_s: Coeficiente de variación del tiempo de servicio
-  const [numServidores, setNumServidores] = useState("2"); // c: número de servidores
-  const [unidadTiempo, setUnidadTiempo] = useState("segundos"); // Unidad de tiempo
+  const [nEstados, setNEstados] = useState("4"); // n
+  const [tasaLlegada, setTasaLlegada] = useState("3"); // λ
+  const [tasaServicio, setTasaServicio] = useState("5"); // μ
   const [resultados, setResultados] = useState(null);
 
-  const handleInputChange = (setter) => (e) => {
-    const value = e.target.value;
-    if (/^[0-9.,]*$/.test(value)) {
-      setter(value);
-    }
-  };
-
-  const handleInputBlur = (setter) => (e) => {
-    const value = e.target.value.replace(/,/g, '.');
-    const parsedValue = parseFloat(value);
-    setter(isNaN(parsedValue) ? "" : parsedValue.toString());
-  };
-
   const calcularResultados = () => {
+    const n = parseInt(nEstados);
     const lambda = parseFloat(tasaLlegada);
     const mu = parseFloat(tasaServicio);
-    const Cs = parseFloat(coefVarServicio); // Coeficiente de variación del tiempo de servicio
-    const c = parseInt(numServidores);
 
-    if (mu > 0 && lambda > 0 && c > 0) {
-      const rho = lambda / mu; // Tasa de tráfico ofrecido
-      const factorial = (n) => (n <= 1 ? 1 : n * factorial(n - 1));
-
-      // Probabilidad de que el sistema esté vacío (P0)
-      let P0 = 0;
-      for (let n = 0; n <= c; n++) {
-        P0 += Math.pow(rho, n) / factorial(n);
-      }
-      P0 = 1 / P0;
-
-      // Probabilidad de rechazo o bloqueo (Pb), también conocida como Erlang-B, cuando el sistema tiene c clientes
-      const Pb = (Math.pow(rho, c) / (factorial(c) * Math.pow(c, c - 1))) * P0;
-
-      // Número promedio de clientes en el sistema (L) considerando el coeficiente de variación del tiempo de servicio
-      const L = rho * (1 - Pb) + (Pb * (Math.pow(Cs, 2) + 1)) / 2;
-
-      // Tiempo promedio en el sistema (W) - en este caso es el tiempo de servicio promedio ajustado
-      const W = L / lambda;
-
-      setResultados({
-        P0,
-        Pb,
-        L,
-        W,
-      });
-    } else {
-      setResultados("Error: Verifique que todos los valores ingresados sean mayores que 0.");
+    if (n <= 0 || lambda <= 0 || mu <= 0) {
+      setResultados("Los valores deben ser positivos.");
+      return;
     }
+
+    // Cálculo de π₀
+    let sumatoria = 0;
+    for (let i = 0; i <= n; i++) {
+      sumatoria += Math.pow(lambda / mu, i);
+    }
+    const pi0 = 1 / sumatoria;
+
+    // Cálculo de probabilidades πᵢ
+    const probabilidades = [];
+    for (let i = 0; i <= n; i++) {
+      const pi = pi0 * Math.pow(lambda / mu, i);
+      probabilidades.push(pi);
+    }
+
+    // Cálculo de L_sistema
+    let L_sistema = 0;
+    for (let i = 0; i <= n; i++) {
+      L_sistema += i * probabilidades[i];
+    }
+
+    // Cálculo de L_cola
+    const L_cola = L_sistema - (1 - pi0);
+
+    // Cálculo de W
+    const W = L_sistema / lambda;
+
+    // Cálculo de utilización (U)
+    const U = 1 - pi0;
+
+    // Resultados
+    setResultados({
+      pi0,
+      probabilidades,
+      L_sistema,
+      L_cola,
+      W,
+      U,
+    });
   };
+
+  // Función para calcular factorial
+  const factorial = (n) => (n === 0 ? 1 : n * factorial(n - 1));
 
   return (
     <Container>
       <FormularioContainer>
         <h2>Parámetros de Entrada</h2>
         <Etiqueta>
+          Número de Estados (n)
+          <Input
+            type="text"
+            value={nEstados}
+            onChange={(e) => setNEstados(e.target.value)}
+          />
+        </Etiqueta>
+        <Etiqueta>
           Tasa de Llegada (λ)
           <Input
             type="text"
             value={tasaLlegada}
-            onChange={handleInputChange(setTasaLlegada)}
-            onBlur={handleInputBlur(setTasaLlegada)}
+            onChange={(e) => setTasaLlegada(e.target.value)}
           />
         </Etiqueta>
-
         <Etiqueta>
           Tasa de Servicio (μ)
           <Input
             type="text"
             value={tasaServicio}
-            onChange={handleInputChange(setTasaServicio)}
-            onBlur={handleInputBlur(setTasaServicio)}
+            onChange={(e) => setTasaServicio(e.target.value)}
           />
         </Etiqueta>
-
-        <Etiqueta>
-          Coeficiente de Variación del Tiempo de Servicio 
-          <Input
-            type="text"
-            value={coefVarServicio}
-            onChange={handleInputChange(setCoefVarServicio)}
-            onBlur={handleInputBlur(setCoefVarServicio)}
-          />
-        </Etiqueta>
-
-        <Etiqueta>
-          Número de Servidores (c)
-          <Input
-            type="text"
-            value={numServidores}
-            onChange={handleInputChange(setNumServidores)}
-            onBlur={handleInputBlur(setNumServidores)}
-          />
-        </Etiqueta>
-
-        <Etiqueta>
-          Unidad de Tiempo
-          <Select value={unidadTiempo} onChange={(e) => setUnidadTiempo(e.target.value)}>
-            <option value="segundos">Segundos</option>
-            <option value="minutos">Minutos</option>
-            <option value="horas">Horas</option>
-          </Select>
-        </Etiqueta>
-
         <Boton onClick={calcularResultados}>Calcular</Boton>
       </FormularioContainer>
 
@@ -124,26 +100,54 @@ export function M_G_C_0() {
             <Resultados>
               <h2>Resultados</h2>
               <ResultadoBox>
-                <p>Probabilidad de que el sistema esté vacío (P0): <strong>{resultados.P0.toFixed(2)}</strong></p>
+                <p>
+                  Probabilidad de que el sistema esté vacío (π₀):{" "}
+                  <strong>{resultados.pi0.toFixed(4)}</strong>
+                </p>
               </ResultadoBox>
               <ResultadoBox>
-                <p>Probabilidad de rechazo o bloqueo (Pb): <strong>{resultados.Pb.toFixed(2)}</strong></p>
+                <p>Probabilidades por estado:</p>
+                {resultados.probabilidades.map((pi, i) => (
+                  <p key={i}>
+                    π<sub>{i}</sub> = <strong>{(pi * 100).toFixed(2)}%</strong>
+                  </p>
+                ))}
               </ResultadoBox>
               <ResultadoBox>
-                <p>Número promedio de clientes en el sistema (L): <strong>{resultados.L.toFixed(2)}</strong></p>
+                <p>
+                  Longitud promedio del sistema (L<sub>sistema</sub>):{" "}
+                  <strong>{resultados.L_sistema.toFixed(4)}</strong>
+                </p>
               </ResultadoBox>
               <ResultadoBox>
-                <p>Tiempo promedio en el sistema (W): <strong>{resultados.W.toFixed(2)} {unidadTiempo}</strong></p>
+                <p>
+                  Longitud promedio de la cola (L<sub>cola</sub>):{" "}
+                  <strong>{resultados.L_cola.toFixed(4)}</strong>
+                </p>
+              </ResultadoBox>
+              <ResultadoBox>
+                <p>
+                  Tiempo promedio de espera (W):{" "}
+                  <strong>{resultados.W.toFixed(2)} horas</strong>
+                </p>
+              </ResultadoBox>
+              <ResultadoBox>
+                <p>
+                  Utilización del sistema (U):{" "}
+                  <strong>{(resultados.U * 100).toFixed(2)}%</strong>
+                </p>
               </ResultadoBox>
             </Resultados>
           )
-        ) : <Cargando />}
+        ) : (
+          <Cargando />
+        )}
       </ResultadosContainer>
     </Container>
   );
 }
 
-// Estilos y otros componentes (no cambian)
+// Estilos y otros componentes
 const Container = styled.div`
   display: flex;
   flex-direction: row;
@@ -164,16 +168,6 @@ const FormularioContainer = styled.div`
 `;
 
 const Input = styled.input`
-  padding: 10px;
-  font-size: 1em;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-top: 5px;
-  width: 100%;
-  max-width: 400px;
-`;
-
-const Select = styled.select`
   padding: 10px;
   font-size: 1em;
   border: 1px solid #ccc;
@@ -207,27 +201,6 @@ const Etiqueta = styled.label`
   color: #343a40;
 `;
 
-const ResultadoBox = styled.div`
-  background-color: #f8f9fa;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  text-align: left;
-  font-size: 1.1em;
-  color: #343a40;
-`;
-
-const Resultados = styled.div`
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-size: 1.2em;
-  color: #343a40;
-  width: 100%;
-`;
-
 const ResultadosContainer = styled.div`
   flex: 1;
   padding: 20px;
@@ -241,8 +214,31 @@ const ResultadosContainer = styled.div`
   align-items: flex-start;
 `;
 
+const Resultados = styled.div`
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-size: 1.2em;
+  color: #343a40;
+  width: 100%;
+`;
+
+const ResultadoBox = styled.div`
+  background-color: #f8f9fa;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  font-size: 1.1em;
+  color: #343a40;
+`;
+
 const ErrorTexto = styled.p`
   color: red;
   font-weight: bold;
   text-align: center;
 `;
+
+export default M_G_C_0;
