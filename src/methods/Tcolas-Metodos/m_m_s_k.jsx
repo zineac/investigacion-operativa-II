@@ -3,74 +3,67 @@ import styled from 'styled-components';
 import Cargando from '../../components/Cargando'
 
 export function M_M_S_K() {
-  const [tasaLlegada, setTasaLlegada] = useState("1"); // λ: tasa de llegada
-  const [tasaServicio, setTasaServicio] = useState("2"); // μ: tasa de servicio
-  const [numServidores, setNumServidores] = useState("2"); // s: número de servidores
-  const [capacidadSistema, setCapacidadSistema] = useState("5"); // K: capacidad del sistema
-  const [unidadTiempo, setUnidadTiempo] = useState("segundos"); // Unidad de tiempo
+  const [tasaLlegada, setTasaLlegada] = useState("0.05"); // λ: tasa de llegada
+  const [tasaServicio, setTasaServicio] = useState("0.5"); // μ: tasa de servicio
+  const [capacidadSistema, setCapacidadSistema] = useState("6"); // N: capacidad del sistema
+  const [unidadTiempo, setUnidadTiempo] = useState("horas"); // Unidad de tiempo
+  const [nClientes, setNClientes] = useState("3"); // Número específico de clientes para calcular Pn
   const [resultados, setResultados] = useState(null);
 
-  const handleInputChange = (setter) => (e) => {
-    const value = e.target.value;
-    if (/^[0-9.,]*$/.test(value)) {
-      setter(value);
-    }
-  };
-
-  const handleInputBlur = (setter) => (e) => {
-    const value = e.target.value.replace(/,/g, '.');
-    const parsedValue = parseFloat(value);
-    setter(isNaN(parsedValue) ? "" : parsedValue.toString());
-  };
-
+  // Función para calcular resultados
   const calcularResultados = () => {
-    const lambda = parseFloat(tasaLlegada);
-    const mu = parseFloat(tasaServicio);
-    const s = parseInt(numServidores);
-    const K = parseInt(capacidadSistema);
+    const λ = parseFloat(tasaLlegada);
+    const μ = parseFloat(tasaServicio);
+    const N = parseInt(capacidadSistema);
+    const n = parseInt(nClientes);
 
-    if (mu > 0 && lambda > 0 && s > 0 && K >= s) {
-      const rho = lambda / mu; // Tasa de tráfico
-      const factorial = (n) => (n <= 1 ? 1 : n * factorial(n - 1));
-
-      // Probabilidad de que el sistema esté vacío (P0)
-      let P0 = 0;
-      for (let n = 0; n <= s - 1; n++) {
-        P0 += Math.pow(rho, n) / factorial(n);
-      }
-      P0 += (Math.pow(rho, s) / factorial(s)) * ((1 - Math.pow(rho / s, K - s + 1)) / (1 - (rho / s)));
-      P0 = 1 / P0;
-
-      // Probabilidad de rechazo o bloqueo (P_k), cuando el sistema tiene K clientes
-      const Pk = (Math.pow(rho, K) / (factorial(s) * Math.pow(s, K - s))) * P0;
-
-      // Tasa de llegada efectiva
-      const lambdaEfectiva = lambda * (1 - Pk);
-
-      // Número promedio de clientes en el sistema (L)
-      let L = 0;
-      for (let n = 0; n <= K; n++) {
-        if (n < s) {
-          L += n * (Math.pow(rho, n) / factorial(n)) * P0;
-        } else {
-          L += n * (Math.pow(rho, n) / (factorial(s) * Math.pow(s, n - s))) * P0;
-        }
-      }
-
-      // Tiempo promedio en el sistema (W)
-      const W = L / lambdaEfectiva;
-
-      setResultados({
-        P0,
-        Pk,
-        L,
-        W,
-        lambdaEfectiva,
-      });
-    } else {
-      setResultados("Error: Verifique que todos los valores ingresados sean mayores que 0 y que K sea mayor o igual a s.");
+    if (λ <= 0 || μ <= 0 || N <= 0 || n < 0 || n > N) {
+      setResultados("Por favor, ingresa valores válidos.");
+      return;
     }
+
+    // Fórmula para P0 (probabilidad de que el sistema esté vacío)
+    let sumatoria = 0;
+    for (let k = 0; k <= N; k++) {
+      sumatoria += (factorial(N) / factorial(N - k)) * Math.pow(λ / μ, k);
+    }
+    const P0 = 1 / sumatoria;
+
+    // Fórmula para Pn (probabilidad de que haya exactamente n clientes en el sistema)
+    const Pn = (factorial(N) / factorial(N - n)) * Math.pow(λ / μ, n) * P0;
+
+    // Fórmula para Lq (número promedio de clientes en la cola)
+    const Lq = N - ((λ + μ)/λ)*(1-P0)
+
+    // Fórmula para L (número promedio de clientes en el sistema)
+    const L = Lq + (1 - P0);
+
+    // Fórmula para Wq (tiempo promedio en cola)
+    const Wq = Lq / (λ * (N - L));
+
+    // Fórmula para W (tiempo promedio en el sistema)
+    const W = Wq + 1 / μ;
+
+    // Fórmula para Pw (probabilidad de que un cliente tenga que esperar)
+    const Pw = 1 - P0;
+
+    setResultados({
+      P0,
+      Pn,
+      Lq,
+      L,
+      Wq,
+      W,
+      Pw,
+    });
   };
+
+  // Helpers para manejar entradas
+  const handleInputChange = (setter) => (e) => setter(e.target.value);
+  const handleInputBlur = (setter) => (e) => setter(e.target.value.trim());
+
+  // Función factorial
+  const factorial = (num) => (num === 0 ? 1 : num * factorial(num - 1));
 
   return (
     <Container>
@@ -97,22 +90,22 @@ export function M_M_S_K() {
         </Etiqueta>
 
         <Etiqueta>
-          Número de Servidores (s)
-          <Input
-            type="text"
-            value={numServidores}
-            onChange={handleInputChange(setNumServidores)}
-            onBlur={handleInputBlur(setNumServidores)}
-          />
-        </Etiqueta>
-
-        <Etiqueta>
           Capacidad del Sistema (K)
           <Input
             type="text"
             value={capacidadSistema}
             onChange={handleInputChange(setCapacidadSistema)}
             onBlur={handleInputBlur(setCapacidadSistema)}
+          />
+        </Etiqueta>
+
+        <Etiqueta>
+          Clientes Específicos (n)
+          <Input
+            type="text"
+            value={nClientes}
+            onChange={handleInputChange(setNClientes)}
+            onBlur={handleInputBlur(setNClientes)}
           />
         </Etiqueta>
 
@@ -136,19 +129,25 @@ export function M_M_S_K() {
             <Resultados>
               <h2>Resultados</h2>
               <ResultadoBox>
-                <p>Probabilidad de que el sistema esté vacío (P0): <strong>{resultados.P0.toFixed(2)}</strong></p>
+                <p>Probabilidad de que el sistema esté vacío (P0): <strong>{resultados.P0.toFixed(4)}</strong></p>
               </ResultadoBox>
               <ResultadoBox>
-                <p>Probabilidad de rechazo o bloqueo (Pk): <strong>{resultados.Pk.toFixed(2)}</strong></p>
+                <p>Número promedio en la cola (Lq): <strong>{resultados.Lq.toFixed(2)}</strong></p>
               </ResultadoBox>
               <ResultadoBox>
-                <p>Tasa de llegada efectiva (λ efectiva): <strong>{resultados.lambdaEfectiva.toFixed(2)}</strong></p>
+                <p>Número promedio en el sistema (L): <strong>{resultados.L.toFixed(2)}</strong></p>
               </ResultadoBox>
               <ResultadoBox>
-                <p>Número promedio de clientes en el sistema (L): <strong>{resultados.L.toFixed(2)}</strong></p>
+                <p>Probabilidad de espera (Pw): <strong>{resultados.Pw.toFixed(4)}</strong></p>
               </ResultadoBox>
               <ResultadoBox>
-                <p>Tiempo promedio en el sistema (W): <strong>{resultados.W.toFixed(2)} {unidadTiempo}</strong></p>
+                <p>Tiempo promedio en cola (Wq): <strong>{resultados.Wq.toFixed(4)} {unidadTiempo}</strong></p>
+              </ResultadoBox>
+              <ResultadoBox>
+                <p>Tiempo promedio en el sistema (W): <strong>{resultados.W.toFixed(4)} {unidadTiempo}</strong></p>
+              </ResultadoBox>
+              <ResultadoBox>
+                <p>Probabilidad de exactamente {nClientes} clientes (Pn): <strong>{resultados.Pn.toFixed(4)}</strong></p>
               </ResultadoBox>
             </Resultados>
           )
@@ -157,6 +156,7 @@ export function M_M_S_K() {
     </Container>
   );
 }
+
 
 // Estilos y otros componentes (no cambian)
 const Container = styled.div`

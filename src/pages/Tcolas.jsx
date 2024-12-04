@@ -8,10 +8,10 @@ import { M_M_S_K } from "../methods/Tcolas-Metodos/m_m_s_k";
 
 const criterios = [
   { id: 1, nombre: "Modelo M/M/1" },
-  { id: 2, nombre: "Modelo M/M/c" },
+  { id: 2, nombre: "Modelo M/M/s" },
   { id: 3, nombre: "Modelo M/G/1" },
   { id: 4, nombre: "Modelo M/G/c/0" },
-  { id: 5, nombre: "Modelo M/M/s/k" },
+  { id: 5, nombre: "Modelo M/M/1/N" },
 ];
 
 export function Tcolas() {
