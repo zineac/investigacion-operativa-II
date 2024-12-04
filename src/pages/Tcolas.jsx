@@ -5,13 +5,15 @@ import { M_M_C } from "../methods/Tcolas-Metodos/m_m_c";
 import { M_G_1 } from "../methods/Tcolas-Metodos/m_g_1";
 import { M_G_C_0 } from "../methods/Tcolas-Metodos/m_g_c_0";
 import { M_M_S_K } from "../methods/Tcolas-Metodos/m_m_s_k";
+import MGK from "../methods/Tcolas-Metodos/m_g_k";
 
 const criterios = [
   { id: 1, nombre: "Modelo M/M/1" },
   { id: 2, nombre: "Modelo M/M/s" },
   { id: 3, nombre: "Modelo M/G/1" },
-  { id: 4, nombre: "Modelo M/G/c/0" },
-  { id: 5, nombre: "Modelo M/M/1/N" },
+  { id: 4, nombre: "Modelo M/G/s" },
+  { id: 5, nombre: "Modelo M/G/c/0" },
+  { id: 6, nombre: "Modelo M/M/1/N" },
 ];
 
 export function Tcolas() {
@@ -38,8 +40,9 @@ export function Tcolas() {
         {criterioSeleccionado === 1 && <M_M_1 />}
         {criterioSeleccionado === 2 && <M_M_C />}
         {criterioSeleccionado === 3 && <M_G_1 />}
-        {criterioSeleccionado === 4 && <M_G_C_0 />}
-        {criterioSeleccionado === 5 && <M_M_S_K />}
+        {criterioSeleccionado === 4 && <MGK />}
+        {criterioSeleccionado === 5 && <M_G_C_0 />}
+        {criterioSeleccionado === 6 && <M_M_S_K />}
       </ContenidoWrapper>
     </ContenedorPrincipal>
   );
