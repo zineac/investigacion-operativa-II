@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import Cargando from '../../components/Cargando'
 
 export function M_M_1() {
-  const [tasaLlegada, setTasaLlegada] = useState("1"); // λ: tasa de llegada
-  const [tasaServicio, setTasaServicio] = useState("2"); // μ: tasa de servicio
-  const [unidadTiempo, setUnidadTiempo] = useState("segundos"); // Unidad de tiempo
+  const [tasaLlegada, setTasaLlegada] = useState("30"); // λ: tasa de llegada
+  const [tasaServicio, setTasaServicio] = useState("35"); // μ: tasa de servicio
+  const [unidadTiempo, setUnidadTiempo] = useState("horas"); // Unidad de tiempo
   const [resultados, setResultados] = useState(null);
 
   const handleInputChange = (setter) => (e) => {
@@ -89,11 +89,21 @@ export function M_M_1() {
           ) : (
             <Resultados>
               <h2>Resultados</h2>
-              <p>Utilización del sistema (ρ): <strong>{resultados.rho.toFixed(2)}</strong></p>
-              <p>Número promedio de clientes en el sistema (L): <strong>{resultados.L.toFixed(2)}</strong></p>
-              <p>Número promedio de clientes en la cola (Lq): <strong>{resultados.Lq.toFixed(2)}</strong></p>
-              <p>Tiempo promedio en el sistema (W): <strong>{resultados.W.toFixed(2)} {unidadTiempo}</strong></p>
-              <p>Tiempo promedio en la cola (Wq): <strong>{resultados.Wq.toFixed(2)} {unidadTiempo}</strong></p>
+              <ResultadoBox>
+                <p>Utilización del sistema (ρ): <strong>{resultados.rho.toFixed(2)}</strong></p>
+              </ResultadoBox>
+              <ResultadoBox>
+                <p>Número promedio de clientes en el sistema (L): <strong>{resultados.L.toFixed(2)}</strong></p>
+              </ResultadoBox>
+              <ResultadoBox>
+                <p>Número promedio de clientes en la cola (Lq): <strong>{resultados.Lq.toFixed(2)}</strong></p>
+              </ResultadoBox>
+              <ResultadoBox>
+                <p>Tiempo promedio en el sistema (W): <strong>{resultados.W.toFixed(2)} {unidadTiempo}</strong></p>
+              </ResultadoBox>
+              <ResultadoBox>
+                <p>Tiempo promedio en la cola (Wq): <strong>{resultados.Wq.toFixed(2)} {unidadTiempo}</strong></p>
+              </ResultadoBox>
             </Resultados>
           )
         ) : <Cargando />}
@@ -120,19 +130,6 @@ const FormularioContainer = styled.div`
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-`;
-
-const ResultadosContainer = styled.div`
-  flex: 0.3;
-  padding: 20px;
-  background-color: #343a40;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;
 
 const Input = styled.input`
@@ -179,14 +176,38 @@ const Etiqueta = styled.label`
   color: #343a40;
 `;
 
+const ResultadoBox = styled.div`
+  background-color: #f8f9fa;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  font-size: 1.1em;
+  color: #343a40;
+`;
+
 const Resultados = styled.div`
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-size: 1.2em;
-  text-align: center;
   color: #343a40;
+  width: 100%;
+`;
+
+const ResultadosContainer = styled.div`
+  flex: 1;
+  padding: 20px;
+  background-color: #343a40;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
 `;
 
 const ErrorTexto = styled.p`
