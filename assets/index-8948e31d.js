@@ -3427,7 +3427,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
       }
     }
   }
-`;function Y6(){const[e,t]=C.useState(!0);return c.jsx(r_,{children:c.jsxs(X6,{className:e?"active":"",children:[c.jsx(H6,{sidebarOpen:e,setSidebarOpen:t}),c.jsx(M6,{})]})})}const X6=E.div`
+`;function Y6(){const[e,t]=C.useState(!0);return c.jsx(r_,{basename:"/investigacion-operativa-II",children:c.jsxs(X6,{className:e?"active":"",children:[c.jsx(H6,{sidebarOpen:e,setSidebarOpen:t}),c.jsx(M6,{})]})})}const X6=E.div`
   display: grid;
   grid-template-columns: 6rem auto;
   height: 100vh;
