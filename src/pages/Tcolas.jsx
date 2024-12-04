@@ -12,8 +12,8 @@ const criterios = [
   { id: 2, nombre: "Modelo M/M/s" },
   { id: 3, nombre: "Modelo M/G/1" },
   { id: 4, nombre: "Modelo M/G/s" },
-  { id: 5, nombre: "Modelo M/G/c/0" },
-  { id: 6, nombre: "Modelo M/M/1/N" },
+  { id: 5, nombre: "Modelo M/M/1/N" },
+  { id: 6, nombre: "Teorema de Little con cadenas de Markov" },
 ];
 
 export function Tcolas() {
@@ -41,8 +41,8 @@ export function Tcolas() {
         {criterioSeleccionado === 2 && <M_M_C />}
         {criterioSeleccionado === 3 && <M_G_1 />}
         {criterioSeleccionado === 4 && <MGK />}
-        {criterioSeleccionado === 5 && <M_G_C_0 />}
-        {criterioSeleccionado === 6 && <M_M_S_K />}
+        {criterioSeleccionado === 5 && <M_M_S_K />}
+        {criterioSeleccionado === 6 && <M_G_C_0 />}
       </ContenidoWrapper>
     </ContenedorPrincipal>
   );
