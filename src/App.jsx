@@ -8,7 +8,7 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/investigacion-operativa-II">
       <MainContainer className={sidebarOpen ? "active" : ""}>
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
         <MyRoutes />
