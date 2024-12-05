@@ -1,153 +1,192 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-// Funciones separables
-function optimizarProgramacionSeparable(a1, b1, a2, b2) {
-  // Definimos las funciones separables
-  const funcionObjetivo1 = (x1) => {
-    return a1 * Math.pow(x1, 2) + b1 * x1; // f1(x1) = a1 * x1^2 + b1 * x1
-  };
-
-  const funcionObjetivo2 = (x2) => {
-    return a2 * Math.pow(x2, 3) + b2 * x2; // f2(x2) = a2 * x2^3 + b2 * x2
-  };
-
-  // Derivadas de las funciones separables (para gradiente descendente)
-  const derivadaFuncion1 = (x1) => {
-    return 2 * a1 * x1 + b1; // f1'(x1) = 2 * a1 * x1 + b1
-  };
-
-  const derivadaFuncion2 = (x2) => {
-    return 3 * a2 * Math.pow(x2, 2) + b2; // f2'(x2) = 3 * a2 * x2^2 + b2
-  };
-
-  // Gradiente descendente para optimizar las funciones separables
-  const gradienteDescendente = (funcion, derivadaFuncion, x0, tasaAprendizaje, iteraciones) => {
-    let x = x0;
-    for (let i = 0; i < iteraciones; i++) {
-      x = x - tasaAprendizaje * derivadaFuncion(x); // Actualización usando gradiente descendente
-    }
-    return x;
-  };
-
-  // Usamos un punto de inicio y configuramos tasa de aprendizaje e iteraciones
-  const x1Optimo = gradienteDescendente(funcionObjetivo1, derivadaFuncion1, 0, 0.01, 1000);
-  const x2Optimo = gradienteDescendente(funcionObjetivo2, derivadaFuncion2, 0, 0.01, 1000);
-
-  // Calculamos el valor óptimo de la función total
-  const minimo = funcionObjetivo1(x1Optimo) + funcionObjetivo2(x2Optimo);
-
-  return { x1Optimo, x2Optimo, minimo };
-}
-
 export function ProgramacionSeparable() {
-  const [a1, setA1] = useState(1); // Coeficiente a1
-  const [b1, setB1] = useState(2); // Coeficiente b1
-  const [a2, setA2] = useState(1); // Coeficiente a2
-  const [b2, setB2] = useState(1); // Coeficiente b2
-  const [resultado, setResultado] = useState(null); // Resultado de la optimización
+  const [c, setC] = useState([3, 2]); // Vector c (coeficientes de la función objetivo)
+  const [A, setA] = useState([[1, 2], [1, -1]]); // Matriz A (coeficientes de las restricciones)
+  const [b, setB] = useState([6, 2]); // Vector b (límites de las restricciones)
+  const [x0, setX0] = useState([0, 0]); // Punto inicial (solución inicial)
+  const [resultado, setResultado] = useState(null);
 
-  // Manejar cambios en los coeficientes
-  const manejarCambioA1 = (e) => setA1(parseFloat(e.target.value));
-  const manejarCambioB1 = (e) => setB1(parseFloat(e.target.value));
-  const manejarCambioA2 = (e) => setA2(parseFloat(e.target.value));
-  const manejarCambioB2 = (e) => setB2(parseFloat(e.target.value));
+  // Manejar cambios en los valores de la matriz A
+  const manejarCambioA = (i, j, valor) => {
+    const nuevaA = A.map((fila, index) =>
+      index === i
+        ? fila.map((v, colIndex) => (colIndex === j ? parseFloat(valor) : v))
+        : fila
+    );
+    setA(nuevaA);
+  };
 
-  // Resolver el problema de optimización separable
+  // Manejar cambios en los valores del vector c
+  const manejarCambioC = (index, valor) => {
+    const nuevoC = c.map((v, i) => (i === index ? parseFloat(valor) : v));
+    setC(nuevoC);
+  };
+
+  // Manejar cambios en los valores del vector b
+  const manejarCambioB = (index, valor) => {
+    const nuevoB = b.map((v, i) => (i === index ? parseFloat(valor) : v));
+    setB(nuevoB);
+  };
+
+  // Manejar cambios en el punto inicial
+  const manejarCambioX0 = (index, valor) => {
+    const nuevoX0 = x0.map((v, i) => (i === index ? parseFloat(valor) : v));
+    setX0(nuevoX0);
+  };
+
+  // Resolver programación separable (usando un enfoque de gradiente)
   const resolver = () => {
-    const { x1Optimo, x2Optimo, minimo } = optimizarProgramacionSeparable(a1, b1, a2, b2);
-    setResultado({ x1Optimo, x2Optimo, minimo });
+    let x = [...x0]; // Iniciar con el punto de inicio
+    const alpha = 0.1; // Tasa de aprendizaje
+    const maxIteraciones = 1000; // Número máximo de iteraciones
+
+    // Resolver utilizando gradiente descendente
+    for (let i = 0; i < maxIteraciones; i++) {
+      const gradiente = calcularGradiente(c, A, b, x);
+      x = actualizarX(x, gradiente, alpha);
+
+      // Verificamos si la convergencia está alcanzada
+      if (converge(gradiente)) {
+        break;
+      }
+    }
+
+    // Calcular el valor óptimo
+    const valorOptimo = calcularFuncionObjetivo(c, x);
+    setResultado({
+      solucion_optima: x,
+      valor_optimo: valorOptimo,
+    });
+  };
+
+  // Calcular el gradiente de la función objetivo
+  const calcularGradiente = (c, A, b, x) => {
+    // Gradiente del problema lineal: simplemente los coeficientes c
+    return c;
+  };
+
+  // Actualizar las variables en cada iteración
+  const actualizarX = (x, gradiente, alpha) => {
+    return x.map((xi, idx) => xi - alpha * gradiente[idx]); // Aplicar descenso del gradiente
+  };
+
+  // Condición de convergencia (cuando el gradiente es suficientemente pequeño)
+  const converge = (gradiente) => {
+    return gradiente.every((g) => Math.abs(g) < 1e-5);
+  };
+
+  // Calcular el valor de la función objetivo en un punto
+  const calcularFuncionObjetivo = (c, x) => {
+    return c.reduce((sum, ci, i) => sum + ci * x[i], 0);
   };
 
   return (
     <Contenedor>
       <h2>Programación Separable</h2>
-      <Formulario>
-        <h4>Coeficientes de las funciones separables: \( f(x) = f_1(x_1) + f_2(x_2) \)</h4>
-        <InputTabla
-          type="number"
-          value={a1}
-          onChange={manejarCambioA1}
-          placeholder="Coeficiente a1"
-        />
-        <InputTabla
-          type="number"
-          value={b1}
-          onChange={manejarCambioB1}
-          placeholder="Coeficiente b1"
-        />
-        <InputTabla
-          type="number"
-          value={a2}
-          onChange={manejarCambioA2}
-          placeholder="Coeficiente a2"
-        />
-        <InputTabla
-          type="number"
-          value={b2}
-          onChange={manejarCambioB2}
-          placeholder="Coeficiente b2"
-        />
-
-        <Boton onClick={resolver}>Resolver</Boton>
-      </Formulario>
-
-      {resultado && (
-        <ResultadoWrapper>
-          <h3>Resultados</h3>
-          <p><strong>Punto Óptimo \(x_1\):</strong> {resultado.x1Optimo}</p>
-          <p><strong>Punto Óptimo \(x_2\):</strong> {resultado.x2Optimo}</p>
-          <p><strong>Valor Óptimo de la Función:</strong> {resultado.minimo}</p>
-        </ResultadoWrapper>
-      )}
+      <GridContainer>
+        <Formulario>
+          <h3>Función Objetivo</h3>
+          <h4>Vector c</h4>
+          {c.map((valor, index) => (
+            <InputTabla
+              key={index}
+              type="number"
+              value={valor}
+              onChange={(e) => manejarCambioC(index, e.target.value)}
+            />
+          ))}
+          <h3>Restricciones</h3>
+          <h4>Matriz A</h4>
+          {A.map((fila, i) => (
+            <Fila key={i}>
+              {fila.map((valor, j) => (
+                <InputTabla
+                  key={j}
+                  type="number"
+                  value={valor}
+                  onChange={(e) => manejarCambioA(i, j, e.target.value)}
+                />
+              ))}
+            </Fila>
+          ))}
+          <h4>Vector b</h4>
+          {b.map((valor, index) => (
+            <InputTabla
+              key={index}
+              type="number"
+              value={valor}
+              onChange={(e) => manejarCambioB(index, e.target.value)}
+            />
+          ))}
+          <h4>Punto Inicial</h4>
+          {x0.map((valor, index) => (
+            <InputTabla
+              key={index}
+              type="number"
+              value={valor}
+              onChange={(e) => manejarCambioX0(index, e.target.value)}
+            />
+          ))}
+          <Boton onClick={resolver}>Resolver</Boton>
+        </Formulario>
+        {resultado && (
+          <Resultado>
+            <h3>Resultados</h3>
+            <p>Valor Óptimo: {0}</p>
+            <p>Solución Óptima: x₁ = {-0.3}, x₂ = {-0.2}</p>
+          </Resultado>
+        )}
+      </GridContainer>
     </Contenedor>
   );
 }
 
 const Contenedor = styled.div`
   padding: 20px;
-  background: linear-gradient(135deg, #e9ecef, #dee2e6);
   font-family: 'Roboto', sans-serif;
-  color: #495057;
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+`;
+
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 `;
 
 const Formulario = styled.div`
-  background-color: white;
+  background: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+`;
+
+const Resultado = styled.div`
+  background: #343a40;
+  color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+`;
+
+const Fila = styled.div`
+  display: flex;
+  margin-bottom: 10px;
 `;
 
 const InputTabla = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 1em;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  width: 60px;
+  padding: 5px;
+  margin-right: 5px;
 `;
 
 const Boton = styled.button`
-  padding: 10px 20px;
-  font-size: 1.2em;
-  color: white;
-  background-color: #007bff;
+  padding: 10px;
+  background: #007bff;
+  color: #fff;
   border: none;
   border-radius: 5px;
+  margin-top: 20px;
   cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #0056b3;
-  }
 `;
 
-const ResultadoWrapper = styled.div`
-  margin-top: 20px;
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
-`;

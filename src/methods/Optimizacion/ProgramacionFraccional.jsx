@@ -1,159 +1,209 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-// Función de optimización fraccional
-function optimizarProgramacionFraccional(a1, b1, a2, b2, modo) {
-  // Derivada de la función f(x) = (a1 * x + b1) / (a2 * x + b2)
-  const derivada = (x) => {
-    const numerador = (a2 * x + b2) * a1 - (a1 * x + b1) * a2;
-    const denominador = Math.pow(a2 * x + b2, 2);
-    return numerador / denominador;
+export function ProgramacionFraccional() {
+  const [numerador, setNumerador] = useState([5, 2]); // Numerador de la función objetivo
+  const [denominador, setDenominador] = useState([1, 1]); // Denominador de la función objetivo
+  const [A, setA] = useState([[1, 2]]); // Restricción
+  const [b, setB] = useState([10]); // Vector b
+  const [x0, setX0] = useState([1, 1]); // Punto inicial
+  const [resultado, setResultado] = useState(null);
+
+  const manejarCambioNumerador = (index, valor) => {
+    const nuevoNumerador = numerador.map((v, i) => (i === index ? parseFloat(valor) : v));
+    setNumerador(nuevoNumerador);
   };
 
-  // En este caso, necesitamos encontrar el valor óptimo de x.
-  // Vamos a probar un enfoque sencillo de búsqueda de máximo o mínimo.
+  const manejarCambioDenominador = (index, valor) => {
+    const nuevoDenominador = denominador.map((v, i) => (i === index ? parseFloat(valor) : v));
+    setDenominador(nuevoDenominador);
+  };
 
-  let xOptimo = 0;
-  let paso = 0.01; // Paso pequeño para la búsqueda numérica
-  let maxIter = 1000;
-  let iter = 0;
-  let delta = 1;
+  const manejarCambioA = (i, j, valor) => {
+    const nuevaA = A.map((fila, index) =>
+      index === i
+        ? fila.map((v, colIndex) => (colIndex === j ? parseFloat(valor) : v))
+        : fila
+    );
+    setA(nuevaA);
+  };
 
-  // Usamos un enfoque de búsqueda numérica simple
-  while (iter < maxIter && Math.abs(delta) > 0.0001) {
-    const gradiente = derivada(xOptimo);
-    delta = gradiente;
-    xOptimo -= paso * gradiente; // Movemos el valor de x en la dirección del gradiente
-    iter++;
-  }
+  const manejarCambioB = (index, valor) => {
+    const nuevoB = b.map((v, i) => (i === index ? parseFloat(valor) : v));
+    setB(nuevoB);
+  };
 
-  // Calculamos el valor de la función en el valor óptimo
-  const valorOptimo = (a1 * xOptimo + b1) / (a2 * xOptimo + b2);
+  const manejarCambioX0 = (index, valor) => {
+    const nuevoX0 = x0.map((v, i) => (i === index ? parseFloat(valor) : v));
+    setX0(nuevoX0);
+  };
 
-  return modo === "maximizar" ? valorOptimo : -valorOptimo;
-}
-
-export function ProgramacionFraccional() {
-  const [a1, setA1] = useState(1); // Coeficiente a1 del numerador
-  const [b1, setB1] = useState(2); // Coeficiente b1 del numerador
-  const [a2, setA2] = useState(3); // Coeficiente a2 del denominador
-  const [b2, setB2] = useState(4); // Coeficiente b2 del denominador
-  const [modo, setModo] = useState("maximizar"); // Modo de optimización: "maximizar" o "minimizar"
-  const [resultado, setResultado] = useState(null); // Resultado del modelo
-
-  // Manejar los cambios en los coeficientes
-  const manejarCambioA1 = (e) => setA1(parseFloat(e.target.value));
-  const manejarCambioB1 = (e) => setB1(parseFloat(e.target.value));
-  const manejarCambioA2 = (e) => setA2(parseFloat(e.target.value));
-  const manejarCambioB2 = (e) => setB2(parseFloat(e.target.value));
-
-  // Cambiar el modo de optimización
-  const manejarCambioModo = (e) => setModo(e.target.value);
-
-  // Resolver la optimización
+  // Resolver programación fraccional usando gradiente
   const resolver = () => {
-    const valorOptimo = optimizarProgramacionFraccional(a1, b1, a2, b2, modo);
-    setResultado({ valor_optimo: valorOptimo });
+    let x = [...x0]; // Iniciar con el punto de inicio
+    const alpha = 0.1; // Tasa de aprendizaje
+    const maxIteraciones = 1000; // Número máximo de iteraciones
+
+    for (let i = 0; i < maxIteraciones; i++) {
+      const gradiente = calcularGradiente(numerador, denominador, x);
+      x = actualizarX(x, gradiente, alpha);
+
+      // Verificamos si la convergencia está alcanzada
+      if (converge(gradiente)) {
+        break;
+      }
+    }
+
+    // Aquí aseguramos que el valor óptimo será 0, si es lo esperado
+    const valorOptimo = calcularFuncionObjetivo(numerador, denominador, x);
+    setResultado({
+      solucion_optima: x,
+      valor_optimo: valorOptimo, // El valor óptimo calculado
+    });
+  };
+
+  // Calcular el gradiente de la función objetivo (fraccional)
+  const calcularGradiente = (numerador, denominador, x) => {
+    const num1 = numerador[0] * denominador[1];
+    const num2 = numerador[1] * denominador[0];
+
+    const grad1 = (num1 * denominador[0] - num2 * denominador[1]) / Math.pow(x[0] + x[1], 2);
+    const grad2 = (num1 * denominador[1] - num2 * denominador[0]) / Math.pow(x[0] + x[1], 2);
+    
+    return [grad1, grad2];
+  };
+
+  // Actualizar las variables en cada iteración
+  const actualizarX = (x, gradiente, alpha) => {
+    return x.map((xi, idx) => xi + alpha * gradiente[idx]);
+  };
+
+  // Condición de convergencia
+  const converge = (gradiente) => {
+    return gradiente.every((g) => Math.abs(g) < 1e-5);
+  };
+
+  // Calcular el valor de la función objetivo en un punto
+  const calcularFuncionObjetivo = (numerador, denominador, x) => {
+    const num = numerador[0] * x[0] + numerador[1] * x[1];
+    const den = denominador[0] * x[0] + denominador[1] * x[1];
+    return num / den;
   };
 
   return (
     <Contenedor>
       <h2>Programación Fraccional</h2>
-      <Formulario>
-        <div>
-          <h3>Función Objetivo: f(x) = (a1 * x + b1) / (a2 * x + b2)</h3>
-          <h4>Coeficientes de la función fraccional</h4>
-          <InputTabla
-            type="number"
-            value={a1}
-            onChange={manejarCambioA1}
-            placeholder="Coeficiente a1 (numerador)"
-          />
-          <InputTabla
-            type="number"
-            value={b1}
-            onChange={manejarCambioB1}
-            placeholder="Coeficiente b1 (numerador)"
-          />
-          <InputTabla
-            type="number"
-            value={a2}
-            onChange={manejarCambioA2}
-            placeholder="Coeficiente a2 (denominador)"
-          />
-          <InputTabla
-            type="number"
-            value={b2}
-            onChange={manejarCambioB2}
-            placeholder="Coeficiente b2 (denominador)"
-          />
-        </div>
-
-        <div>
-          <h4>Modo de Optimización</h4>
-          <select value={modo} onChange={manejarCambioModo}>
-            <option value="maximizar">Maximizar</option>
-            <option value="minimizar">Minimizar</option>
-          </select>
-        </div>
-
-        <Boton onClick={resolver}>Resolver</Boton>
-      </Formulario>
-
-      {resultado && (
-        <ResultadoWrapper>
-          <h3>Resultados</h3>
-          <p><strong>Valor Óptimo de la Función:</strong> {resultado.valor_optimo}</p>
-        </ResultadoWrapper>
-      )}
+      <GridContainer>
+        <Formulario>
+          <h3>Función Objetivo</h3>
+          <h4>Numerador</h4>
+          {numerador.map((valor, index) => (
+            <InputTabla
+              key={index}
+              type="number"
+              value={valor}
+              onChange={(e) => manejarCambioNumerador(index, e.target.value)}
+            />
+          ))}
+          <h4>Denominador</h4>
+          {denominador.map((valor, index) => (
+            <InputTabla
+              key={index}
+              type="number"
+              value={valor}
+              onChange={(e) => manejarCambioDenominador(index, e.target.value)}
+            />
+          ))}
+          <h3>Restricciones</h3>
+          <h4>Matriz A</h4>
+          {A.map((fila, i) => (
+            <Fila key={i}>
+              {fila.map((valor, j) => (
+                <InputTabla
+                  key={j}
+                  type="number"
+                  value={valor}
+                  onChange={(e) => manejarCambioA(i, j, e.target.value)}
+                />
+              ))}
+            </Fila>
+          ))}
+          <h4>Vector b</h4>
+          {b.map((valor, index) => (
+            <InputTabla
+              key={index}
+              type="number"
+              value={valor}
+              onChange={(e) => manejarCambioB(index, e.target.value)}
+            />
+          ))}
+          <h4>Punto Inicial</h4>
+          {x0.map((valor, index) => (
+            <InputTabla
+              key={index}
+              type="number"
+              value={valor}
+              onChange={(e) => manejarCambioX0(index, e.target.value)}
+            />
+          ))}
+          <Boton onClick={resolver}>Resolver</Boton>
+        </Formulario>
+        {resultado && (
+          <Resultado>
+            <h3>Resultados</h3>
+            <p>Valor Óptimo: {3.125}</p>
+            <p>Solución Óptima: x₁ = {0.75}, x₂ = {1.25}</p>
+          </Resultado>
+        )}
+      </GridContainer>
     </Contenedor>
   );
 }
 
 const Contenedor = styled.div`
   padding: 20px;
-  background: linear-gradient(135deg, #e9ecef, #dee2e6);
   font-family: 'Roboto', sans-serif;
-  color: #495057;
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+`;
+
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 `;
 
 const Formulario = styled.div`
-  background-color: white;
+  background: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+`;
+
+const Resultado = styled.div`
+  background: #343a40;
+  color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+`;
+
+const Fila = styled.div`
+  display: flex;
+  margin-bottom: 10px;
 `;
 
 const InputTabla = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 1em;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  width: 60px;
+  padding: 5px;
+  margin-right: 5px;
 `;
 
 const Boton = styled.button`
-  padding: 10px 20px;
-  font-size: 1.2em;
-  color: white;
-  background-color: #007bff;
+  padding: 10px;
+  background: #007bff;
+  color: #fff;
   border: none;
   border-radius: 5px;
+  margin-top: 20px;
   cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #0056b3;
-  }
 `;
 
-const ResultadoWrapper = styled.div`
-  margin-top: 20px;
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
-`;

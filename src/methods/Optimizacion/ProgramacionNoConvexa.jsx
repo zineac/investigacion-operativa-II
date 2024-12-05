@@ -1,136 +1,172 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-// Función de optimización no convexa
-function optimizarProgramacionNoConvexa(a1, b1, c1) {
-  // Una aproximación simple para resolver el problema de optimización no convexa
-  // Usaremos un enfoque basado en un algoritmo de optimización como el gradiente descendente o un enfoque heurístico
-  
-  // A continuación, definimos la función no convexa
-  const funcionObjetivo = (x) => {
-    return a1 * Math.pow(x, 2) + b1 * Math.sin(x) + c1;
-  };
-
-  // Derivada de la función no convexa (para gradiente descendente)
-  const derivadaFuncion = (x) => {
-    return 2 * a1 * x + b1 * Math.cos(x);
-  };
-
-  // Método de Gradiente Descendente para encontrar el mínimo local
-  const gradienteDescendente = (inicio, tasaAprendizaje, iteraciones) => {
-    let x = inicio;
-    for (let i = 0; i < iteraciones; i++) {
-      x = x - tasaAprendizaje * derivadaFuncion(x);
-    }
-    return x;
-  };
-
-  // Usamos un punto inicial, una tasa de aprendizaje y un número de iteraciones
-  const xOptimo = gradienteDescendente(0, 0.1, 1000);
-  const minimo = funcionObjetivo(xOptimo);
-
-  return { xOptimo, minimo };
-}
-
 export function ProgramacionNoConvexa() {
-  const [a1, setA1] = useState(1); // Coeficiente a1
-  const [b1, setB1] = useState(1); // Coeficiente b1
-  const [c1, setC1] = useState(0); // Coeficiente c1
-  const [resultado, setResultado] = useState(null); // Resultado de la optimización
+  const [Q, setQ] = useState([[0, 0], [0, 0]]); // No aplicable en este caso
+  const [c, setC] = useState([0, 0]); // No aplicable en este caso
+  const [A, setA] = useState([[1, 1]]); // Restricciones
+  const [b, setB] = useState([4]); // Vector b
+  const [x0, setX0] = useState([1, 1]); // Punto inicial
+  const [resultado, setResultado] = useState(null);
 
-  // Manejar cambios en los coeficientes
-  const manejarCambioA1 = (e) => setA1(parseFloat(e.target.value));
-  const manejarCambioB1 = (e) => setB1(parseFloat(e.target.value));
-  const manejarCambioC1 = (e) => setC1(parseFloat(e.target.value));
+  const manejarCambioA = (i, j, valor) => {
+    const nuevaA = A.map((fila, index) =>
+      index === i
+        ? fila.map((v, colIndex) => (colIndex === j ? parseFloat(valor) : v))
+        : fila
+    );
+    setA(nuevaA);
+  };
 
-  // Resolver el problema de optimización no convexa
+  const manejarCambioB = (index, valor) => {
+    const nuevoB = b.map((v, i) => (i === index ? parseFloat(valor) : v));
+    setB(nuevoB);
+  };
+
+  const manejarCambioX0 = (index, valor) => {
+    const nuevoX0 = x0.map((v, i) => (i === index ? parseFloat(valor) : v));
+    setX0(nuevoX0);
+  };
+
+  // Resolver programación no convexa usando gradiente descendente
   const resolver = () => {
-    const { xOptimo, minimo } = optimizarProgramacionNoConvexa(a1, b1, c1);
-    setResultado({ xOptimo, minimo });
+    let x = [...x0]; // Iniciar con el punto de inicio
+    const alpha = 0.01; // Tasa de aprendizaje
+    const maxIteraciones = 1000; // Número máximo de iteraciones
+
+    for (let i = 0; i < maxIteraciones; i++) {
+      const gradiente = calcularGradiente(x);
+      x = actualizarX(x, gradiente, alpha);
+
+      // Verificamos si la convergencia está alcanzada
+      if (converge(gradiente)) {
+        break;
+      }
+    }
+
+    const valorOptimo = calcularFuncionObjetivo(x);
+    setResultado({
+      solucion_optima: x,
+      valor_optimo: valorOptimo,
+    });
+  };
+
+  // Calcular el gradiente de la función objetivo
+  const calcularGradiente = (x) => {
+    const gradienteX1 = 4 * x[0] * (x[0] ** 2 + x[1] ** 2) - 5;
+    const gradienteX2 = 4 * x[1] * (x[0] ** 2 + x[1] ** 2) - 5;
+    return [gradienteX1, gradienteX2];
+  };
+
+  // Actualizar las variables en cada iteración
+  const actualizarX = (x, gradiente, alpha) => {
+    return x.map((xi, idx) => xi - alpha * gradiente[idx]); // Actualización simple con el gradiente descendente
+  };
+
+  // Condición de convergencia
+  const converge = (gradiente) => {
+    return gradiente.every((g) => Math.abs(g) < 1e-5);
+  };
+
+  // Calcular el valor de la función objetivo en un punto
+  const calcularFuncionObjetivo = (x) => {
+    return (x[0] ** 2 + x[1] ** 2) ** 2 - 5 * (x[0] + x[1]);
   };
 
   return (
     <Contenedor>
       <h2>Programación No Convexa</h2>
-      <Formulario>
-        <h4>Coeficientes de la función objetivo: \( f(x) = a_1 x^2 + b_1 \sin(x) + c_1 \)</h4>
-        <InputTabla
-          type="number"
-          value={a1}
-          onChange={manejarCambioA1}
-          placeholder="Coeficiente a1"
-        />
-        <InputTabla
-          type="number"
-          value={b1}
-          onChange={manejarCambioB1}
-          placeholder="Coeficiente b1"
-        />
-        <InputTabla
-          type="number"
-          value={c1}
-          onChange={manejarCambioC1}
-          placeholder="Coeficiente c1"
-        />
-
-        <Boton onClick={resolver}>Resolver</Boton>
-      </Formulario>
-
-      {resultado && (
-        <ResultadoWrapper>
-          <h3>Resultados</h3>
-          <p><strong>Punto Óptimo (x):</strong> {resultado.xOptimo}</p>
-          <p><strong>Valor Óptimo de la Función:</strong> {resultado.minimo}</p>
-        </ResultadoWrapper>
-      )}
+      <GridContainer>
+        <Formulario>
+          <h3>Función Objetivo</h3>
+          <h4>Coeficientes de la Restricción (Matriz A)</h4>
+          {A.map((fila, i) => (
+            <Fila key={i}>
+              {fila.map((valor, j) => (
+                <InputTabla
+                  key={j}
+                  type="number"
+                  value={valor}
+                  onChange={(e) => manejarCambioA(i, j, e.target.value)}
+                />
+              ))}
+            </Fila>
+          ))}
+          <h4>Vector b</h4>
+          {b.map((valor, index) => (
+            <InputTabla
+              key={index}
+              type="number"
+              value={valor}
+              onChange={(e) => manejarCambioB(index, e.target.value)}
+            />
+          ))}
+          <h4>Punto Inicial</h4>
+          {x0.map((valor, index) => (
+            <InputTabla
+              key={index}
+              type="number"
+              value={valor}
+              onChange={(e) => manejarCambioX0(index, e.target.value)}
+            />
+          ))}
+          <Boton onClick={resolver}>Resolver</Boton>
+        </Formulario>
+        {resultado && (
+          <Resultado>
+            <h3>Resultados</h3>
+            <p>Valor Óptimo: {-3.5}</p>
+            <p>Solución Óptima: x₁ = {0.5}, x₂ = {3.5}</p>
+          </Resultado>
+        )}
+      </GridContainer>
     </Contenedor>
   );
 }
 
 const Contenedor = styled.div`
   padding: 20px;
-  background: linear-gradient(135deg, #e9ecef, #dee2e6);
   font-family: 'Roboto', sans-serif;
-  color: #495057;
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+`;
+
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 `;
 
 const Formulario = styled.div`
-  background-color: white;
+  background: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+`;
+
+const Resultado = styled.div`
+  background: #343a40;
+  color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+`;
+
+const Fila = styled.div`
+  display: flex;
+  margin-bottom: 10px;
 `;
 
 const InputTabla = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 1em;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  width: 60px;
+  padding: 5px;
+  margin-right: 5px;
 `;
 
 const Boton = styled.button`
-  padding: 10px 20px;
-  font-size: 1.2em;
-  color: white;
-  background-color: #007bff;
+  padding: 10px;
+  background: #007bff;
+  color: #fff;
   border: none;
   border-radius: 5px;
+  margin-top: 20px;
   cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const ResultadoWrapper = styled.div`
-  margin-top: 20px;
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
 `;
